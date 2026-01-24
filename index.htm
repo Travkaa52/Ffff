@@ -1,112 +1,279 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тебе, моя любовь</title>
+    <title>МОЕЙ САМОЙ-САМОЙ ЛЮБИМОЙ ДЕВУШКЕ ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --main-gradient: linear-gradient(135deg, #FFDAB9 0%, #FFB6C1 100%); /* Персиковый-розовый */
+            --text-color-dark: #8B4513; /* Коричневый */
+            --text-color-light: #FFF8DC; /* Сливочный */
+            --heart-color: #FF69B4; /* Ярко-розовый */
+            --sparkle-color: #FFD700; /* Золотой */
+        }
+
         body {
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            font-family: 'cursive', sans-serif;
-            overflow: hidden;
+            min-height: 100vh;
+            background: var(--main-gradient);
+            font-family: 'Comfortaa', cursive;
+            color: var(--text-color-dark);
+            overflow: hidden; /* Чтобы анимации не создавали скролл */
+            position: relative;
         }
 
-        .card {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 50px;
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            text-align: center;
+        .background-animation {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .background-animation span {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+            opacity: 0;
+        }
+        /* Сердечки */
+        .background-animation span:nth-child(odd) {
+            background: var(--heart-color);
+            transform: rotate(45deg); /* Чтобы выглядело как сердечко */
+            width: 30px; height: 30px;
+            animation-delay: calc(var(--i) * -0.5s);
+            animation-duration: calc(10s + var(--i) * 0.5s);
+        }
+        /* Звездочки/Блестки */
+        .background-animation span:nth-child(even) {
+            background: var(--sparkle-color);
+            width: 15px; height: 15px;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 67% 57%, 78% 92%, 50% 70%, 22% 92%, 33% 57%, 2% 35%, 39% 35%);
+            animation-delay: calc(var(--i) * -0.5s);
+            animation-duration: calc(12s + var(--i) * 0.7s);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+        }
+
+        .card-container {
             position: relative;
-            z-index: 2;
-            border: 2px solid #fff;
-            max-width: 80%;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 30px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            border: 5px solid var(--heart-color);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .card-container:hover {
+            transform: scale(1.02);
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--sparkle-color);
+            margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.6);
+            animation: bounce 2s infinite alternate;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
         }
 
         h1 {
-            color: #d63384;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            font-family: 'Pacifico', cursive;
+            color: var(--heart-color);
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
         }
 
-        .heart-main {
-            font-size: 80px;
-            cursor: pointer;
-            display: inline-block;
-            transition: transform 0.3s;
-            animation: pulse 1.5s infinite;
+        .message {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: var(--text-color-dark);
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .btn {
+        .signature {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.5em;
+            color: var(--heart-color);
             margin-top: 30px;
-            background: #ff4d6d;
+        }
+
+        .btn-magic {
+            background: var(--heart-color);
             color: white;
             border: none;
-            padding: 15px 40px;
+            padding: 18px 35px;
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: 1.3em;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
-            transition: 0.3s;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.4);
+            animation: floatButton 3s infinite ease-in-out;
         }
 
-        .btn:hover {
-            background: #c9184a;
-            transform: scale(1.05);
+        .btn-magic:hover {
+            background: #FF1493; /* Глубокий розовый */
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 10px 25px rgba(255, 20, 147, 0.6);
         }
 
-        .floating-heart {
+        @keyframes floatButton {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Анимация конфетти */
+        .confetti {
             position: absolute;
-            color: #ff4d6d;
-            pointer-events: none;
-            z-index: 1;
-            animation: move linear forwards;
+            width: 10px;
+            height: 10px;
+            background-color: var(--heart-color); /* Розовое конфетти */
+            border-radius: 50%;
+            opacity: 0;
+            animation: confetti-fall 3s forwards;
+            z-index: 100;
         }
 
-        @keyframes move {
-            from { transform: translateY(0) rotate(0deg); opacity: 1; }
-            to { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotateZ(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; }
+        }
+
+        /* Анимация "люблю тебя" */
+        .flying-text {
+            position: absolute;
+            font-family: 'Pacifico', cursive;
+            font-size: 2.5em;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            pointer-events: none;
+            animation: flyText 10s infinite ease-out;
+            opacity: 0;
+            z-index: 2;
+        }
+
+        @keyframes flyText {
+            0% { transform: translate(-100vw, 50vh) scale(0.5); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translate(100vw, -50vh) scale(1.2); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="heart-main" onclick="extraHearts()">❤️</div>
-        <h1>Люблю тебя котенок мой!</h1>
-        <p style="font-size: 1.3rem; color: #594d5b;">ты мое все зайка.</p>
-        <button class="btn" onclick="extraHearts()">нажми что бы почувствовать мою любовь</button>
+    <audio id="backgroundMusic" loop autoplay>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио.
+    </audio>
+
+    <div class="background-animation" id="backgroundAnimation"></div>
+
+    <div class="card-container">
+        <img src="https://images.unsplash.com/photo-1548480749-923f6e8c7c93?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Моя любимая" class="profile-pic">
+        
+        <h1>Моей сладкой Зайке!</h1>
+        <p class="message">
+            Привет, моё Солнышко! Просто хотел напомнить тебе, что ты самое удивительное, нежное и невероятное чудо в моей жизни. 
+            Каждая секунда с тобой — это волшебство. 
+            Моё сердце бьется только для тебя, моя самая-самая любимая зайка! 
+        </p>
+        <button class="btn-magic" onclick="triggerMagic()">Нажми , моя Любовь!</button>
+        <p class="signature">Твой навсегда</p>
     </div>
 
     <script>
-        function extraHearts() {
-            for (let i = 0; i < 30; i++) {
-                setTimeout(() => {
-                    const heart = document.createElement('div');
-                    heart.className = 'floating-heart';
-                    heart.innerHTML = ['❤️', '💖', '🌸', '✨', '🐾'][Math.floor(Math.random() * 5)];
-                    heart.style.left = Math.random() * 100 + 'vw';
-                    heart.style.bottom = '-10px';
-                    heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
-                    heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                    document.body.appendChild(heart);
-                    
-                    setTimeout(() => heart.remove(), 4000);
-                }, i * 100);
+        // Анимация фоновых сердечек и звездочек
+        function createBackgroundElements() {
+            const container = document.getElementById('backgroundAnimation');
+            for (let i = 0; i < 50; i++) {
+                const span = document.createElement('span');
+                span.style.left = Math.random() * 100 + 'vw';
+                span.style.animationDuration = Math.random() * 15 + 10 + 's';
+                span.style.animationDelay = Math.random() * 10 + 's';
+                span.style.setProperty('--i', i); // Передаем индекс для вариативности анимации
+                container.appendChild(span);
             }
         }
+        createBackgroundElements();
+
+        // Анимация "люблю тебя"
+        function createFlyingText() {
+            const texts = ["Люблю тебя! ❤️", "Моё Счастье! ✨", "Ты лучшая! 🥰"];
+            setInterval(() => {
+                const text = document.createElement('div');
+                text.classList.add('flying-text');
+                text.innerHTML = texts[Math.floor(Math.random() * texts.length)];
+                text.style.left = Math.random() * 100 + 'vw';
+                text.style.top = Math.random() * 100 + 'vh';
+                text.style.animationDuration = Math.random() * 8 + 7 + 's';
+                document.body.appendChild(text);
+                setTimeout(() => text.remove(), 10000);
+            }, 3000); // Создавать новый текст каждые 3 секунды
+        }
+        createFlyingText();
+
+        // Основная магия при клике на кнопку
+        function triggerMagic() {
+            // Анимация конфетти
+            for (let i = 0; i < 70; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 70%)`; // Случайные цвета
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+
+            // Дополнительный Alert с сообщением
+            setTimeout(() => {
+                alert("Ты моё ВСЁ! Каждый день с тобой  это подарок");
+            }, 500);
+
+            // Можно добавить вибрацию для мобильных устройств (если поддерживается)
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+
+            // Воспроизведение звука (если нужно, можно добавить короткий звук)
+            // const sound = new Audio('ПУТЬ_К_ЗВУКУ.mp3');
+            // sound.play();
+        }
+
+        // Автоматическое воспроизведение музыки (может быть заблокировано браузерами)
+        window.addEventListener('load', () => {
+            const music = document.getElementById('backgroundMusic');
+            music.volume = 0.3; // Тише, чтобы не заглушать
+            music.play().catch(e => console.log("Музыка заблокирована браузером:", e));
+        });
     </script>
 </body>
 </html>
