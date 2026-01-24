@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тебе, моя любовь</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            font-family: 'cursive', sans-serif;
+            overflow: hidden;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            border: 2px solid #fff;
+            max-width: 80%;
+        }
+
+        h1 {
+            color: #d63384;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .heart-main {
+            font-size: 80px;
+            cursor: pointer;
+            display: inline-block;
+            transition: transform 0.3s;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .btn {
+            margin-top: 30px;
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: #c9184a;
+            transform: scale(1.05);
+        }
+
+        .floating-heart {
+            position: absolute;
+            color: #ff4d6d;
+            pointer-events: none;
+            z-index: 1;
+            animation: move linear forwards;
+        }
+
+        @keyframes move {
+            from { transform: translateY(0) rotate(0deg); opacity: 1; }
+            to { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="heart-main" onclick="extraHearts()">❤️</div>
+        <h1>Люблю тебя котенок мой!</h1>
+        <p style="font-size: 1.3rem; color: #594d5b;">ты мое все зайка.</p>
+        <button class="btn" onclick="extraHearts()">нажми что бы почувствовать мою любовь</button>
+    </div>
+
+    <script>
+        function extraHearts() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-heart';
+                    heart.innerHTML = ['❤️', '💖', '🌸', '✨', '🐾'][Math.floor(Math.random() * 5)];
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.bottom = '-10px';
+                    heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                    heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 4000);
+                }, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>
