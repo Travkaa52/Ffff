@@ -25,7 +25,7 @@
 
         body {
             margin: 0;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
             height: 100vh;
             overflow: hidden;
             font-family: 'Montserrat', sans-serif;
@@ -33,70 +33,60 @@
             justify-content: center;
             align-items: center;
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            transition: background 1.5s ease;
         }
-
-        body.dark-mode { background: #1a1a1a; }
 
         #app {
             z-index: 10; text-align: center; color: white;
-            padding: 25px; width: 85%; max-width: 380px;
+            padding: 20px; width: 90%; max-width: 400px;
             border-radius: 30px; background: var(--glass);
             backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column; gap: 10px;
         }
 
-        h1 { font-family: 'Pacifico', cursive; font-size: 1.6rem; margin-bottom: 15px; }
+        h1 { font-family: 'Pacifico', cursive; font-size: 1.5rem; margin: 0; }
 
-        /* Таймер */
-        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
-        .timer-item { background: rgba(255, 255, 255, 0.15); padding: 10px 5px; border-radius: 12px; }
-        .timer-number { display: block; font-size: 1.1rem; font-weight: 600; }
-        .timer-label { font-size: 0.55rem; text-transform: uppercase; }
+        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+        .timer-item { background: rgba(255, 255, 255, 0.15); padding: 8px 2px; border-radius: 12px; }
+        .timer-number { display: block; font-size: 1rem; font-weight: 600; }
+        .timer-label { font-size: 0.5rem; text-transform: uppercase; }
 
-        /* Чат */
         #chat-container {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.15);
             border-radius: 20px;
             padding: 10px;
             display: flex;
             flex-direction: column;
-            height: 200px;
+            height: 35vh; /* Увеличили чат */
         }
 
         #messages {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding: 5px;
-            margin-bottom: 8px;
+            flex: 1; overflow-y: auto; display: flex;
+            flex-direction: column; gap: 8px; padding: 5px;
         }
 
         .msg {
-            padding: 8px 12px;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            max-width: 80%;
-            word-wrap: break-word;
-            line-height: 1.3;
+            padding: 10px 14px; border-radius: 18px; font-size: 0.85rem;
+            max-width: 80%; word-wrap: break-word; line-height: 1.3;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-
         .msg.me { align-self: flex-end; background: var(--primary-color); color: white; border-bottom-right-radius: 2px; }
         .msg.her { align-self: flex-start; background: white; color: #333; border-bottom-left-radius: 2px; }
-
-        .input-area { display: flex; gap: 5px; }
         
+        /* Стиль для сообщений с локацией */
+        .msg.loc { cursor: pointer; text-decoration: underline; font-weight: 600; }
+        .msg.loc::before { content: '📍 '; }
+
+        .input-area { display: flex; gap: 8px; margin-top: 5px; }
         input {
-            flex: 1; border: none; border-radius: 20px; padding: 8px 15px;
-            outline: none; font-family: 'Montserrat', sans-serif;
+            flex: 1; border: none; border-radius: 25px; padding: 10px 15px;
+            outline: none; font-size: 0.9rem; background: white;
         }
 
-        .send-btn {
-            background: var(--primary-color); color: white; border: none;
-            width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
+        .icon-btn {
+            background: white; border: none; width: 40px; height: 40px;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; font-size: 1.2rem; cursor: pointer;
         }
 
         .heart {
@@ -112,7 +102,7 @@
 </head>
 <body>
 
-<div id="app" class="animate__animated animate__fadeInUp">
+<div id="app" class="animate__animated animate__fadeIn">
     <h1 id="name">Для тебя ❤️</h1>
     
     <div class="timer-grid">
@@ -125,21 +115,21 @@
     <div id="chat-container">
         <div id="messages"></div>
         <div class="input-area">
-            <input type="text" id="uInput" placeholder="Напиши что-нибудь...">
-            <button class="send-btn" onclick="sendMsg()">🚀</button>
+            <button class="icon-btn" onclick="sendLocation()" title="Отправить где я">📍</button>
+            <input type="text" id="uInput" placeholder="Сообщение...">
+            <button class="icon-btn" style="background: var(--primary-color); color: white;" onclick="sendMsg()">🚀</button>
         </div>
     </div>
 
-    <div class="btn-group" style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
-        <button onclick="toggleMusic()" id="musicBtn" style="background: white; border: none; border-radius: 50px; padding: 8px 15px; color: #ff4b6e; font-weight: 600;">🎵 Музыка</button>
-        <button onclick="toggleSecret()" style="background: white; border: none; border-radius: 50px; padding: 8px 15px; color: #ff4b6e; font-weight: 600;">🕵️ Секрет</button>
+    <div style="display: flex; justify-content: space-around;">
+        <button onclick="toggleMusic()" id="musicBtn" style="border:none; background:none; color:white; font-size: 0.8rem;">🎵 Музыка</button>
+        <button onclick="document.body.classList.toggle('dark-mode')" style="border:none; background:none; color:white; font-size: 0.8rem;">🌙 Тема</button>
     </div>
 </div>
 
 <audio id="music" loop src="https://cdn.pixabay.com/audio/2022/03/15/audio_8d79e4e8f7.mp3"></audio>
 
 <script>
-    // ТВОИ ДАННЫЕ FIREBASE
     const firebaseConfig = {
         apiKey: "AIzaSyDvF1USp7BnmWT9WBWlpikh6fwzM5RY8LU",
         authDomain: "planning-with-ai-3778e.firebaseapp.com",
@@ -148,49 +138,61 @@
         appId: "1:529178865890:web:259924626fb1827abd6ebb"
     };
 
-    const START_DATE = "2024-01-01"; // Дата начала
+    const START_DATE = "2024-01-01";
     const USER_NAME = "Любимая";
 
-    // Инициализация
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const chatRef = db.ref("chat");
 
-    let myRole = localStorage.getItem('userRole');
-    if (!myRole) {
-        myRole = confirm("Ты автор проекта (ОН)?") ? 'me' : 'her';
-        localStorage.setItem('userRole', myRole);
-    }
+    let myRole = localStorage.getItem('userRole') || (confirm("Ты автор?") ? 'me' : 'her');
+    localStorage.setItem('userRole', myRole);
 
-    // Функция отправки
     function sendMsg() {
         const inp = document.getElementById("uInput");
         const val = inp.value.trim();
         if (val) {
-            chatRef.push({
-                role: myRole,
-                text: val,
-                time: Date.now()
-            });
+            chatRef.push({ role: myRole, text: val, type: 'text', time: Date.now() });
             inp.value = "";
         }
     }
 
-    // Слушаем базу
-    chatRef.limitToLast(15).on("value", (snap) => {
+    // НОВАЯ ФУНКЦИЯ: ГЕОЛОКАЦИЯ
+    function sendLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                chatRef.push({
+                    role: myRole,
+                    text: `Я здесь!`,
+                    lat: lat,
+                    lon: lon,
+                    type: 'location',
+                    time: Date.now()
+                });
+            }, () => alert("Включи доступ к гео на iPhone в Настройках Safari"));
+        }
+    }
+
+    chatRef.limitToLast(20).on("value", (snap) => {
         const box = document.getElementById("messages");
         box.innerHTML = "";
         snap.forEach(child => {
             const m = child.val();
             const d = document.createElement("div");
-            d.className = `msg ${m.role === myRole ? 'me' : 'her'}`;
+            d.className = `msg ${m.role === myRole ? 'me' : 'her'} ${m.type === 'location' ? 'loc' : ''}`;
             d.textContent = m.text;
+            
+            if (m.type === 'location') {
+                d.onclick = () => window.open(`https://www.google.com/maps?q=${m.lat},${m.lon}`);
+            }
+            
             box.appendChild(d);
         });
         box.scrollTop = box.scrollHeight;
     });
 
-    // Таймер
     function updateTimer() {
         const diff = new Date() - new Date(START_DATE);
         document.getElementById("days").textContent = Math.floor(diff / 86400000);
@@ -200,37 +202,24 @@
     }
 
     function toggleMusic() {
-        const audio = document.getElementById("music");
-        const btn = document.getElementById("musicBtn");
-        if (audio.paused) {
-            audio.play();
-            btn.textContent = "⏸ Стоп";
-        } else {
-            audio.pause();
-            btn.textContent = "🎵 Музыка";
-        }
-    }
-
-    function toggleSecret() {
-        document.body.classList.toggle('dark-mode');
-    }
-
-    function createHeart() {
-        const heart = document.createElement("div");
-        heart.className = "heart";
-        heart.textContent = ["❤️", "💖", "💝", "💕", "🌸"][Math.floor(Math.random() * 5)];
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = Math.random() * 15 + 15 + "px";
-        heart.style.animationDuration = Math.random() * 3 + 3 + "s";
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 6000);
+        const a = document.getElementById("music");
+        a.paused ? a.play() : a.pause();
     }
 
     setInterval(updateTimer, 1000);
-    setInterval(createHeart, 400);
-    document.getElementById("name").textContent = `Для тебя, ${USER_NAME} ❤️`;
-    document.getElementById("uInput").addEventListener("keypress", e => { if(e.key === "Enter") sendMsg(); });
-</script>
+    setInterval(() => {
+        const h = document.createElement("div");
+        h.className = "heart";
+        h.textContent = "❤️";
+        h.style.left = Math.random() * 100 + "vw";
+        h.style.fontSize = Math.random() * 15 + 15 + "px";
+        h.style.animationDuration = Math.random() * 3 + 2 + "s";
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 5000);
+    }, 600);
 
+    document.getElementById("uInput").addEventListener("keypress", e => { if(e.key === "Enter") sendMsg(); });
+    document.getElementById("name").textContent = `Для тебя, ${USER_NAME} ❤️`;
+</script>
 </body>
 </html>
