@@ -2,178 +2,48 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Для тебя зайка ❤️</title>
+<title>Для тебя ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+
 <style>
-html,body{
+body{
   margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  font-family: 'Segoe UI', sans-serif;
-}
-canvas{
-  position:fixed;
-  top:0;
-  left:0;
-  z-index:-1;
-}
-#ui{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#ff5f6d,#ffc371);
+  font-family:-apple-system, BlinkMacSystemFont, sans-serif;
+  color:white;
   text-align:center;
-  color:white;
-  text-shadow:0 0 15px pink;
 }
-#text{
-  font-size:2.5em;
-  margin-bottom:20px;
-}
-button{
-  padding:15px 35px;
-  border:none;
-  border-radius:30px;
-  background:linear-gradient(45deg,#ff0066,#ff99cc);
-  color:white;
-  font-size:1.2em;
-  cursor:pointer;
-  box-shadow:0 0 20px pink;
-}
-#timer{
-  margin-top:15px;
-  font-size:1.1em;
+#msg{
+  font-size:2em;
+  padding:20px;
+  text-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 </style>
 </head>
 <body>
 
-<canvas id="bg"></canvas>
-
-<div id="ui">
-  <div id="text"></div>
-  <button onclick="boom()">Нажми 💖</button>
-  <div id="timer"></div>
-</div>
-
-<audio id="music" src="https://cdn.pixabay.com/audio/2022/03/15/audio_8d79e4e8f7.mp3"></audio>
+<div id="msg">Загрузка…</div>
 
 <script>
-const canvas = document.getElementById("bg");
-const ctx = canvas.getContext("2d");
-let w,h;
-function resize(){
-  w=canvas.width=window.innerWidth;
-  h=canvas.height=window.innerHeight;
-}
-window.onresize=resize;
-resize();
+const URL = "https://ТВОЙ_НИК.github.io/ТВОЙ_РЕПО/messages.json";
 
-/* Градиент фон */
-let hue=0;
-
-/* Частицы */
-let particles=[];
-function Particle(x,y){
-  this.x=x;
-  this.y=y;
-  this.vx=(Math.random()-0.5)*4;
-  this.vy=(Math.random()-0.5)*4;
-  this.life=100;
-}
-function spawn(x,y){
-  for(let i=0;i<40;i++){
-    particles.push(new Particle(x,y));
+async function loadMessage(){
+  try{
+    const res = await fetch(URL + "?t=" + Date.now());
+    const data = await res.json();
+    document.getElementById("msg").textContent = data.message;
+  }catch{
+    document.getElementById("msg").textContent = "Нет связи 💔";
   }
 }
 
-/* Сердца */
-let hearts=[];
-function Heart(){
-  this.x=Math.random()*w;
-  this.y=h+20;
-  this.size=10+Math.random()*20;
-  this.speed=1+Math.random()*2;
-}
-function createHeart(){
-  hearts.push(new Heart());
-}
-setInterval(createHeart,200);
-
-/* Анимация */
-function animate(){
-  hue+=0.3;
-  ctx.fillStyle="hsl("+hue+",70%,15%)";
-  ctx.fillRect(0,0,w,h);
-
-  hearts.forEach((h,i)=>{
-    h.y-=h.speed;
-    ctx.font=h.size+"px Arial";
-    ctx.fillText("❤️",h.x,h.y);
-    if(h.y<-50) hearts.splice(i,1);
-  });
-
-  particles.forEach((p,i)=>{
-    p.x+=p.vx;
-    p.y+=p.vy;
-    p.life--;
-    ctx.fillStyle="pink";
-    ctx.fillRect(p.x,p.y,3,3);
-    if(p.life<=0) particles.splice(i,1);
-  });
-
-  requestAnimationFrame(animate);
-}
-animate();
-
-/* Фразы */
-const phrases=[
-  "Ты — самое красивое что есть в моей жизни ❤️",
-  "Я думаю о тебе каждый день 💭",
-  "Ты делаешь меня счастливым 😍",
-  "Я оооочень сильно тебя люблю 💖",
-  "Ты моё чудооо ✨"
-];
-let phraseIndex=0;
-let charIndex=0;
-let textEl=document.getElementById("text");
-
-function typeText(){
-  if(charIndex < phrases[phraseIndex].length){
-    textEl.textContent += phrases[phraseIndex][charIndex];
-    charIndex++;
-  } else {
-    setTimeout(()=>{
-      textEl.textContent="";
-      charIndex=0;
-      phraseIndex=(phraseIndex+1)%phrases.length;
-    },2000);
-  }
-}
-setInterval(typeText,100);
-
-/* Таймер любви */
-const startDate = new Date("2025-12-22");
-function updateTimer(){
-  let now=new Date();
-  let diff=now-startDate;
-  let days=Math.floor(diff/1000/60/60/24);
-  document.getElementById("timer").textContent=
-    "Я люблю тебя уже "+days+" дней 💕";
-}
-setInterval(updateTimer,1000);
-
-/* Кнопка */
-function boom(){
-  spawn(w/2,h/2);
-  document.getElementById("music").play();
-}
-
-/* Клик по экрану */
-canvas.addEventListener("click",(e)=>{
-  spawn(e.clientX,e.clientY);
-});
+loadMessage();
+setInterval(loadMessage, 15000); // каждые 15 сек
 </script>
 
 </body>
