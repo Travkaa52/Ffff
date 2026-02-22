@@ -1,108 +1,259 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Для тебя ❤️</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="manifest.json">
-<style>
-body{
-  margin:0; height:100vh; overflow:hidden;
-  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
-  display:flex; justify-content:center; align-items:center;
-  transition: background 2s;
-}
-#app{
-  text-align:center;
-  color:white;
-  padding:30px;
-  border-radius:20px;
-  background:rgba(255,255,255,0.1);
-  box-shadow:0 0 30px pink;
-}
-#name{font-size:2em; margin-bottom:10px; text-shadow:0 0 15px pink;}
-#timer{margin:10px; font-size:1.2em;}
-#history{margin-top:15px; max-height:150px; overflow:auto; font-size:0.9em; text-align:left;}
-button{
-  margin:5px; padding:10px 20px; border:none; border-radius:20px;
-  background:linear-gradient(45deg,#ff0066,#ff99cc); color:white; font-size:1em;
-  box-shadow:0 0 20px pink; cursor:pointer;
-}
-#heart{
-  position:fixed; font-size:20px; animation: float 6s linear infinite;
-}
-@keyframes float{
-  from{transform:translateY(100vh);opacity:1;}
-  to{transform:translateY(-10vh);opacity:0;}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для тебя ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root {
+            --primary-color: #ff4b6e;
+            --secondary-color: #ffb6c1;
+            --glass: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: background 1.5s ease;
+        }
+
+        body.dark-mode {
+            background: #1a1a1a;
+        }
+
+        #app {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: white;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 30px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(255, 75, 110, 0.5);
+        }
+
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .timer-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px 5px;
+            border-radius: 12px;
+        }
+
+        .timer-number {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .timer-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        #history {
+            margin-top: 20px;
+            max-height: 120px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            text-align: left;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            scrollbar-width: thin;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        button {
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            background: white;
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 75, 110, 0.3);
+        }
+
+        button:active { transform: translateY(0); }
+
+        /* Сердечки */
+        .heart {
+            position: fixed;
+            bottom: -50px;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
 </head>
 <body>
 
-<div id="app">
-  <div id="name"></div>
-  <div id="timer"></div>
-  <div id="history"></div>
-  <button onclick="loadData()">🔄 Обновить</button>
-  <button onclick="toggleMusic()">🎵 Музыка</button>
-  <button onclick="toggleSecret()">🕵️ Секретный режим</button>
+<div id="app" class="animate__animated animate__fadeInUp">
+    <h1 id="name">Загрузка...</h1>
+    
+    <div class="timer-grid" id="timer">
+        <div class="timer-item"><span class="timer-number" id="days">0</span><span class="timer-label">Дней</span></div>
+        <div class="timer-item"><span class="timer-number" id="hours">0</span><span class="timer-label">Часов</span></div>
+        <div class="timer-item"><span class="timer-number" id="mins">0</span><span class="timer-label">Мин</span></div>
+        <div class="timer-item"><span class="timer-number" id="secs">0</span><span class="timer-label">Сек</span></div>
+    </div>
+
+    <div id="history">✨ Сообщения появятся здесь...</div>
+
+    <div class="btn-group">
+        <button onclick="fetchData()">🔄 Обновить</button>
+        <button onclick="toggleMusic()" id="musicBtn">🎵 Музыка</button>
+        <button onclick="toggleSecret()">🕵️ Секрет</button>
+    </div>
 </div>
 
 <audio id="music" loop src="https://cdn.pixabay.com/audio/2022/03/15/audio_8d79e4e8f7.mp3"></audio>
 
 <script>
-const URL="https://ТВОЙ_НИК.github.io/ТВОЙ_РЕПО/messages.json";
-let data,playing=false;
+    // ЗАМЕНИ ЭТИ ДАННЫЕ НА СВОИ
+    const CONFIG_URL = "https://ТВОЙ_НИК.github.io/ТВОЙ_РЕПО/messages.json";
+    
+    let state = {
+        name: "Любимая",
+        startDate: "2024-01-01",
+        messages: [],
+        secretMode: localStorage.getItem('secretMode') === 'true',
+        isPlaying: false
+    };
 
-async function loadData(){
-  try{
-    const r=await fetch(URL+"?t="+Date.now());
-    data=await r.json();
-
-    document.getElementById("name").textContent="Для тебя, "+data.name+" ❤️";
-
-    let start=new Date(data.startDate);
-    let now=new Date();
-    let days=Math.floor((now-start)/1000/60/60/24);
-    document.getElementById("timer").textContent="Мы вместе уже "+days+" дней 💕";
-
-    // история сообщений
-    let html = data.messages.map(m=>"• "+m).join("<br>");
-    document.getElementById("history").innerHTML=html;
-
-    // секретный режим
-    if(data.secretMode){
-      document.body.style.background="black";
-    }else{
-      document.body.style.background="linear-gradient(135deg,#ff4b6e,#ffb6c1)";
+    async function fetchData() {
+        try {
+            const response = await fetch(`${CONFIG_URL}?t=${Date.now()}`);
+            const data = await response.json();
+            state = { ...state, ...data };
+            updateUI();
+        } catch (err) {
+            console.error("Ошибка загрузки:", err);
+            // Если не загрузилось, попробуем обновить интерфейс с дефолтными данными
+            updateUI();
+        }
     }
-  }catch{
-    document.getElementById("name").textContent="Ошибка загрузки 😢";
-  }
-}
 
-function toggleMusic(){
-  const m=document.getElementById("music");
-  if(!playing){m.play(); playing=true;}else{m.pause(); playing=false;}
-}
+    function updateUI() {
+        document.getElementById("name").textContent = `Для тебя, ${state.name} ❤️`;
+        
+        // История сообщений
+        const historyEl = document.getElementById("history");
+        historyEl.innerHTML = state.messages.map(m => `<div style="margin-bottom:8px">💖 ${m}</div>`).join("");
 
-function toggleSecret(){
-  data.secretMode=!data.secretMode;
-  loadData();
-}
+        // Секретный режим
+        if (state.secretMode) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+    }
 
-// сердечки
-setInterval(()=>{
-  let h=document.createElement("div");
-  h.id="heart";
-  h.textContent="❤️";
-  h.style.left=Math.random()*100+"vw";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),6000);
-},300);
+    function updateTimer() {
+        const start = new Date(state.startDate);
+        const now = new Date();
+        const diff = now - start;
 
-loadData();
-setInterval(loadData,15000);
+        if (isNaN(diff)) return;
+
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const m = Math.floor((diff / (1000 * 60)) % 60);
+        const s = Math.floor((diff / 1000) % 60);
+
+        document.getElementById("days").textContent = d;
+        document.getElementById("hours").textContent = h;
+        document.getElementById("mins").textContent = m;
+        document.getElementById("secs").textContent = s;
+    }
+
+    function toggleMusic() {
+        const audio = document.getElementById("music");
+        const btn = document.getElementById("musicBtn");
+        if (!state.isPlaying) {
+            audio.play();
+            btn.textContent = "⏸ Стоп";
+        } else {
+            audio.pause();
+            btn.textContent = "🎵 Музыка";
+        }
+        state.isPlaying = !state.isPlaying;
+    }
+
+    function toggleSecret() {
+        state.secretMode = !state.secretMode;
+        localStorage.setItem('secretMode', state.secretMode);
+        updateUI();
+    }
+
+    // Создание сердечек
+    function createHeart() {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.textContent = ["❤️", "💖", "💝", "💕", "🌸"][Math.floor(Math.random() * 5)];
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = Math.random() * 20 + 15 + "px";
+        heart.style.animationDuration = Math.random() * 3 + 3 + "s";
+        heart.style.opacity = Math.random();
+        
+        document.body.appendChild(heart);
+        
+        setTimeout(() => heart.remove(), 6000);
+    }
+
+    // Запуск всего
+    fetchData();
+    setInterval(updateTimer, 1000);
+    setInterval(createHeart, 400);
+    setInterval(fetchData, 30000); // Обновление данных раз в 30 сек
 </script>
 
 </body>
