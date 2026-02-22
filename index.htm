@@ -10,6 +10,16 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="myy.png">
 
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "4441fd3b-60ff-440c-8c05-1e611714735e",
+        });
+      });
+    </script>
+
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
@@ -45,7 +55,6 @@
             gap: 20px;
         }
 
-        /* Блок Таймера */
         .love-counter {
             background: white;
             padding: 25px 15px;
@@ -66,10 +75,7 @@
             gap: 10px;
         }
 
-        .timer-item {
-            display: flex;
-            flex-direction: column;
-        }
+        .timer-item { display: flex; flex-direction: column; }
 
         .timer-number {
             font-size: 1.3rem;
@@ -84,7 +90,6 @@
             letter-spacing: 1px;
         }
 
-        /* Блок Нежностей (Чат) */
         .chat-area {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(10px);
@@ -132,7 +137,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.03);
         }
 
-        /* Ввод текста */
         .input-box {
             display: flex;
             gap: 8px;
@@ -163,9 +167,6 @@
             transition: transform 0.2s;
         }
 
-        .btn-send:active { transform: scale(0.9); }
-
-        /* Сердечки */
         .heart-float {
             position: fixed;
             bottom: -50px;
@@ -203,11 +204,10 @@
 </div>
 
 <script>
-    // 1. Твои настройки
-    const START_DATE = "2025-12-22T19:29:45"; // Измени дату на вашу
-    const USER_NAME = "Любимая"; 
+    const START_DATE = "2025-12-22T19:29:45"; 
+    const ONESIGNAL_APP_ID = "4441fd3b-60ff-440c-8c05-1e611714735e";
+    const ONESIGNAL_REST_KEY = "4441fd3b-60ff-440c-8c05-1e611714735e"; // Найти в Settings -> API Keys
 
-    // 2. Firebase Config (Оставь свои данные)
     const firebaseConfig = {
         apiKey: "AIzaSyDvF1USp7BnmWT9WBWlpikh6fwzM5RY8LU",
         databaseURL: "https://planning-with-ai-3778e-default-rtdb.firebaseio.com/",
@@ -219,11 +219,30 @@
     const db = firebase.database();
     const chatRef = db.ref("love_notes");
 
-    // Роль
-    let myRole = localStorage.getItem("role") || (confirm("Ты Егор?") ? "me" : "her");
+    let myRole = localStorage.getItem("role") || (confirm("Ты?") ? "me" : "her");
     localStorage.setItem("role", myRole);
 
-    // Функция отправки
+    // Функция для пуша
+    async function sendPush(text) {
+        if (ONESIGNAL_REST_KEY === "ВСТАВЬ_СЮДА_REST_API_KEY") return;
+        
+        try {
+            await fetch("https://onesignal.com/api/v1/notifications", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "Authorization": "Basic " + ONESIGNAL_REST_KEY
+                },
+                body: JSON.stringify({
+                    app_id: ONESIGNAL_APP_ID,
+                    included_segments: ["Total Subscriptions"],
+                    headings: {"ru": "Новое послание ❤️"},
+                    contents: {"ru": text}
+                })
+            });
+        } catch(e) { console.error("Push error", e); }
+    }
+
     function sendMsg() {
         const inp = document.getElementById("uInput");
         const val = inp.value.trim();
@@ -233,12 +252,15 @@
                 text: val,
                 time: Date.now()
             });
+            
+            // Отправляем пуш другому человеку
+            sendPush(val);
+
             inp.value = "";
             if(navigator.vibrate) navigator.vibrate(15);
         }
     }
 
-    // Загрузка сообщений
     chatRef.limitToLast(20).on("child_added", snap => {
         const m = snap.val();
         const box = document.getElementById("messages");
@@ -249,7 +271,6 @@
         box.scrollTop = box.scrollHeight;
     });
 
-    // Таймер
     function updateTimer() {
         const diff = Date.now() - new Date(START_DATE);
         document.getElementById("days").textContent = Math.floor(diff / 86400000);
@@ -259,7 +280,6 @@
     }
     setInterval(updateTimer, 1000);
 
-    // Летающие сердечки
     function createHeart() {
         if (document.hidden) return;
         const h = document.createElement("div");
@@ -273,9 +293,7 @@
     }
     setInterval(createHeart, 1000);
 
-    // Enter для отправки
     document.getElementById("uInput").addEventListener("keypress", e => { if(e.key === "Enter") sendMsg(); });
 </script>
-
 </body>
 </html>
