@@ -5,45 +5,104 @@
 <title>Для тебя ❤️</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.json">
-
 <style>
 body{
-  margin:0;
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(135deg,#ff5f6d,#ffc371);
-  font-family:-apple-system, BlinkMacSystemFont, sans-serif;
-  color:white;
-  text-align:center;
+  margin:0; height:100vh; overflow:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  display:flex; justify-content:center; align-items:center;
+  transition: background 2s;
 }
-#msg{
-  font-size:2em;
-  padding:20px;
-  text-shadow:0 0 10px rgba(0,0,0,0.5);
+#app{
+  text-align:center;
+  color:white;
+  padding:30px;
+  border-radius:20px;
+  background:rgba(255,255,255,0.1);
+  box-shadow:0 0 30px pink;
+}
+#name{font-size:2em; margin-bottom:10px; text-shadow:0 0 15px pink;}
+#timer{margin:10px; font-size:1.2em;}
+#history{margin-top:15px; max-height:150px; overflow:auto; font-size:0.9em; text-align:left;}
+button{
+  margin:5px; padding:10px 20px; border:none; border-radius:20px;
+  background:linear-gradient(45deg,#ff0066,#ff99cc); color:white; font-size:1em;
+  box-shadow:0 0 20px pink; cursor:pointer;
+}
+#heart{
+  position:fixed; font-size:20px; animation: float 6s linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(100vh);opacity:1;}
+  to{transform:translateY(-10vh);opacity:0;}
 }
 </style>
 </head>
 <body>
 
-<div id="msg">Загрузка…</div>
+<div id="app">
+  <div id="name"></div>
+  <div id="timer"></div>
+  <div id="history"></div>
+  <button onclick="loadData()">🔄 Обновить</button>
+  <button onclick="toggleMusic()">🎵 Музыка</button>
+  <button onclick="toggleSecret()">🕵️ Секретный режим</button>
+</div>
+
+<audio id="music" loop src="https://cdn.pixabay.com/audio/2022/03/15/audio_8d79e4e8f7.mp3"></audio>
 
 <script>
-const URL = "https://ТВОЙ_НИК.github.io/ТВОЙ_РЕПО/messages.json";
+const URL="https://ТВОЙ_НИК.github.io/ТВОЙ_РЕПО/messages.json";
+let data,playing=false;
 
-async function loadMessage(){
+async function loadData(){
   try{
-    const res = await fetch(URL + "?t=" + Date.now());
-    const data = await res.json();
-    document.getElementById("msg").textContent = data.message;
+    const r=await fetch(URL+"?t="+Date.now());
+    data=await r.json();
+
+    document.getElementById("name").textContent="Для тебя, "+data.name+" ❤️";
+
+    let start=new Date(data.startDate);
+    let now=new Date();
+    let days=Math.floor((now-start)/1000/60/60/24);
+    document.getElementById("timer").textContent="Мы вместе уже "+days+" дней 💕";
+
+    // история сообщений
+    let html = data.messages.map(m=>"• "+m).join("<br>");
+    document.getElementById("history").innerHTML=html;
+
+    // секретный режим
+    if(data.secretMode){
+      document.body.style.background="black";
+    }else{
+      document.body.style.background="linear-gradient(135deg,#ff4b6e,#ffb6c1)";
+    }
   }catch{
-    document.getElementById("msg").textContent = "Нет связи 💔";
+    document.getElementById("name").textContent="Ошибка загрузки 😢";
   }
 }
 
-loadMessage();
-setInterval(loadMessage, 15000); // каждые 15 сек
+function toggleMusic(){
+  const m=document.getElementById("music");
+  if(!playing){m.play(); playing=true;}else{m.pause(); playing=false;}
+}
+
+function toggleSecret(){
+  data.secretMode=!data.secretMode;
+  loadData();
+}
+
+// сердечки
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.id="heart";
+  h.textContent="❤️";
+  h.style.left=Math.random()*100+"vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},300);
+
+loadData();
+setInterval(loadData,15000);
 </script>
 
 </body>
