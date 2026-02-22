@@ -57,18 +57,16 @@ function goToApp() {
     window.location.href = "app.html"; 
 }
 
-// --- 6. СИСТЕМА УВЕДОМЛЕНИЙ ---
+// --- 6. ОБНОВЛЕННАЯ СИСТЕМА УВЕДОМЛЕНИЙ ---
 
 async function enableNotifications() {
     const btn = document.getElementById('notify-btn');
     
-    // Проверяем, поддерживает ли браузер уведомления
     if (!("Notification" in window)) {
         alert("Этот телефон не поддерживает уведомления 😔");
         return;
     }
 
-    // Запрашиваем разрешение
     const permission = await Notification.requestPermission();
     
     if (permission === 'granted') {
@@ -77,19 +75,34 @@ async function enableNotifications() {
             btn.style.background = "rgba(255, 255, 255, 0.4)";
         }
         
-        // Показываем первое нежное сообщение сразу
-        sendInstantLove();
+        // Запускаем цикл случайных уведомлений
+        startRandomLoveNotifications();
     } else {
-        alert("Разреши уведомления в настройках браузера, чтобы я мог присылать тебе сообщения! ❤️");
+        alert("Разреши уведомления в настройках, чтобы получать сообщения! ❤️");
     }
 }
 
-function sendInstantLove() {
+// Функция загрузки JSON и выбора случайной фразы
+async function getRandomPhrase() {
+    try {
+        const response = await fetch('phrases.json');
+        const data = await response.json();
+        const randomIndex = Math.floor(Math.random() * data.messages.length);
+        return data.messages[randomIndex];
+    } catch (error) {
+        console.error("Не удалось загрузить фразы:", error);
+        return "Я тебя очень люблю! ❤️"; // Запасная фраза, если файл не скачался
+    }
+}
+
+// Функция отправки уведомления
+async function showLovePush() {
+    const phrase = await getRandomPhrase();
+    
     if (navigator.serviceWorker.controller) {
-        // Отправляем тестовый пуш через SW
         navigator.serviceWorker.ready.then(reg => {
             reg.showNotification("Наш Уголок ❤️", {
-                body: "Теперь я буду присылать тебе напоминания о моей любви! ✨",
+                body: phrase,
                 icon: "myy.png",
                 badge: "myy.png",
                 vibrate: [200, 100, 200]
@@ -98,12 +111,12 @@ function sendInstantLove() {
     }
 }
 
-// Обработка Enter
-document.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        const passInput = document.getElementById("password");
-        if (passInput === document.activeElement) {
-            checkPassword();
-        }
-    }
-});
+// Запуск цикла
+function startRandomLoveNotifications() {
+    // Показываем первое сразу
+    showLovePush();
+    
+    // Повторяем, например, каждые 3 часа (10800000 мс)
+    // Важно: в браузере это работает, пока вкладка открыта в фоне
+    setInterval(showLovePush, 10800000); 
+}
