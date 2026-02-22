@@ -1,299 +1,154 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Наш Счётчик ❤️</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Для тебя 💖</title>
+<style>
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: url('https://abrakadabra.fun/uploads/posts/2022-02/1644388892_1-abrakadabra-fun-p-zadnii-fon-dlya-saita-1.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #fff;
+  text-align: center;
+  overflow-x: hidden;
+}
 
-    <link rel="manifest" href="manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="myy.png">
+/* Музыка */
+.music-button {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 2000;
+  background: rgba(34,34,34,0.75);
+  border: none;
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor:pointer;
+  backdrop-filter: blur(4px);
+  font-size:16px;
+}
+.music-button:active{ transform: translateY(1px); }
 
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "4441fd3b-60ff-440c-8c05-1e611714735e",
-        });
-      });
-    </script>
+/* Контейнер текста */
+.container {
+  max-width: 900px;
+  margin: 80px auto;
+  background: rgba(0,0,0,0.45);
+  padding: 30px 25px;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+}
 
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+h1 {
+  font-size: 3em;
+  color: #ff4d4d;
+  margin-bottom: 25px;
+  cursor:pointer;
+  user-select:none;
+  display:inline-block;
+  position: relative;
+}
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Pacifico&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+/* Сердечки */
+.heart {
+  position: absolute;
+  pointer-events: none;
+  font-size: 18px;
+  animation: heartFloat 2600ms ease-out forwards;
+  z-index: 1500;
+}
+@keyframes heartFloat {
+  0%   { transform: translateY(0) scale(0.8); opacity:1; }
+  100% { transform: translateY(-260px) scale(1.4); opacity:0; }
+}
 
-    <style>
-        :root {
-            --love-gradient: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
-            --glass: rgba(255, 255, 255, 0.2);
-        }
+p {
+  font-size: 1.25em;
+  line-height: 1.7em;
+  text-align: justify;
+}
 
-        body {
-            margin: 0;
-            padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Montserrat', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #fdf2f4;
-            background: radial-gradient(circle at top, #fff5f7, #fde2e9);
-        }
-
-        #app {
-            z-index: 10;
-            width: 85%;
-            max-width: 380px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .love-counter {
-            background: white;
-            padding: 25px 15px;
-            border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(255, 117, 140, 0.15);
-        }
-
-        .love-counter h1 {
-            font-family: 'Pacifico', cursive;
-            color: #ff4b6e;
-            margin: 0 0 15px 0;
-            font-size: 1.4rem;
-        }
-
-        .timer-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .timer-item { display: flex; flex-direction: column; }
-
-        .timer-number {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .timer-label {
-            font-size: 0.6rem;
-            color: #aaa;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .chat-area {
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 15px;
-            height: 45vh;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-
-        #messages {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding: 5px;
-        }
-
-        .msg {
-            padding: 12px 18px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            max-width: 80%;
-            line-height: 1.4;
-            word-wrap: break-word;
-            animation: zoomIn 0.4s ease;
-        }
-
-        .me {
-            align-self: flex-end;
-            background: var(--love-gradient);
-            color: white;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.3);
-        }
-
-        .her {
-            align-self: flex-start;
-            background: white;
-            color: #555;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        }
-
-        .input-box {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        input {
-            flex: 1;
-            border: none;
-            border-radius: 20px;
-            padding: 12px 15px;
-            outline: none;
-            background: white;
-            font-family: 'Montserrat';
-            font-size: 0.9rem;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
-        }
-
-        .btn-send {
-            background: var(--love-gradient);
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .heart-float {
-            position: fixed;
-            bottom: -50px;
-            pointer-events: none;
-            z-index: 1;
-            animation: floatUp linear forwards;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 0.8; }
-            100% { transform: translateY(-110vh) scale(1.5); opacity: 0; }
-        }
-    </style>
+a.back-button {
+  display:inline-block;
+  margin-top: 30px;
+  text-decoration:none;
+  color:#fff;
+  font-weight:bold;
+  font-size:1.2em;
+  background: #ff4d4d;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: 0.25s;
+}
+a.back-button:hover {
+  background: #ff7f7f;
+}
+</style>
 </head>
 <body>
 
-<div id="app" class="animate__animated animate__fadeIn">
-    <div class="love-counter">
-        <h1 id="title">Люблю тебя уже ❤️</h1>
-        <div class="timer-grid">
-            <div class="timer-item"><span class="timer-number" id="days">0</span><span class="timer-label">Дней</span></div>
-            <div class="timer-item"><span class="timer-number" id="hours">0</span><span class="timer-label">Час</span></div>
-            <div class="timer-item"><span class="timer-number" id="mins">0</span><span class="timer-label">Мин</span></div>
-            <div class="timer-item"><span class="timer-number" id="secs">0</span><span class="timer-label">Сек</span></div>
-        </div>
-    </div>
+<button class="music-button" id="musicBtn">🎵 Включить музыку</button>
+<audio id="bgMusic" loop>
+  <source src="videos/Chase Atlantic Right Here.mp3" type="audio/mpeg">
+</audio>
 
-    <div class="chat-area">
-        <div id="messages"></div>
-        <div class="input-box">
-            <input type="text" id="uInput" placeholder="Напиши что-то нежное...">
-            <button class="btn-send" onclick="sendMsg()">❤️</button>
-        </div>
-    </div>
+<div class="container">
+  <h1 id="loveText">Для тебя 💖</h1>
+  
+  <p>
+   Моя зайка,
+
+С того момента, как я впервые увидел тебя, моя жизнь наполнилась светом, теплом и невероятной радостью. Каждое утро я просыпаюсь с мыслью о тебе, и даже самые простые вещи становятся особыми, потому что они напоминают мне о тебе.
+  </p>
+  <p>Твои глаза — это океан, в котором я хочу тонуть снова и снова, а твоя улыбка способна рассеять все тучи, даже самые тяжёлые. Я помню каждый момент, проведённый рядом с тобой: каждый смешок, каждое слово, которое согревало душу.
+    
+  </p>
+  <p>В моём сердце ты живёшь всегда. Даже когда мы далеко друг от друга, я чувствую твоё присутствие в каждом вздохе, в каждом дне, в каждой звезде на небе. Ты стала частью моей жизни, моей мечтой и моей реальностью одновременно.</p>
+  <p>Я хочу, чтобы ты знала, что каждый миг с тобой — это подарок, и я буду хранить его навсегда. Ты вдохновляешь меня быть лучше, мечтать больше и любить сильнее. С тобой даже самые обыденные моменты превращаются в волшебство.</p>
+  <p>Я благодарен судьбе за то, что она привела нас друг к другу, и обещаю заботиться о тебе, уважать и поддерживать во всём. Пусть наши дни будут наполнены счастьем, смехом, нежностью и бесконечной любовью.</p>
+  <p>Ты — моя радость, моя музыка, моя вечность. И я хочу идти с тобой по этому пути рука об руку, создавая нашу историю, полную света и тепла.</p>
+  <p>Моя любимая, моя солнышко, моя девочка, моя малышка, моя душа, моя принцесса, моя богиня, киса, дорогая, любовь моя, котеночек, милашка, прелесть, лапочка, красавица, милаха, моя зайка, ты самая прекрасная девушка в мире</p>
+  <p>я очень дорожу тобой, ты важна для меня, нужна мне как кислород, знай что я всегда буду рядом с тобой, ты только моя</p>
+  <p>я Безумно люблю тебя Зайка моя</p>
+  
+
+  <a class="back-button" href="https://fuyugakuru.github.io/my_love.my_heart/index.html">← Вернуться на главную</a>
 </div>
 
 <script>
-    const START_DATE = "2025-12-22T19:29:45"; 
-    const ONESIGNAL_APP_ID = "4441fd3b-60ff-440c-8c05-1e611714735e";
-    const ONESIGNAL_REST_KEY = "4441fd3b-60ff-440c-8c05-1e611714735e"; // Найти в Settings -> API Keys
+/* Музыка */
+const musicBtn = document.getElementById('musicBtn');
+const bgMusic = document.getElementById('bgMusic');
+function updateMusicLabel(){
+  musicBtn.textContent = bgMusic.paused ? '🎵 Включить музыку' : '⏸ Остановить';
+}
+musicBtn.onclick = ()=>{ bgMusic.paused ? bgMusic.play() : bgMusic.pause(); updateMusicLabel(); };
+updateMusicLabel();
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyDvF1USp7BnmWT9WBWlpikh6fwzM5RY8LU",
-        databaseURL: "https://planning-with-ai-3778e-default-rtdb.firebaseio.com/",
-        projectId: "planning-with-ai-3778e",
-        appId: "1:529178865890:web:259924626fb1827abd6ebb"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const chatRef = db.ref("love_notes");
-
-    let myRole = localStorage.getItem("role") || (confirm("Ты?") ? "me" : "her");
-    localStorage.setItem("role", myRole);
-
-    // Функция для пуша
-    async function sendPush(text) {
-        if (ONESIGNAL_REST_KEY === "ВСТАВЬ_СЮДА_REST_API_KEY") return;
-        
-        try {
-            await fetch("https://onesignal.com/api/v1/notifications", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8",
-                    "Authorization": "Basic " + ONESIGNAL_REST_KEY
-                },
-                body: JSON.stringify({
-                    app_id: ONESIGNAL_APP_ID,
-                    included_segments: ["Total Subscriptions"],
-                    headings: {"ru": "Новое послание ❤️"},
-                    contents: {"ru": text}
-                })
-            });
-        } catch(e) { console.error("Push error", e); }
-    }
-
-    function sendMsg() {
-        const inp = document.getElementById("uInput");
-        const val = inp.value.trim();
-        if (val) {
-            chatRef.push({
-                role: myRole,
-                text: val,
-                time: Date.now()
-            });
-            
-            // Отправляем пуш другому человеку
-            sendPush(val);
-
-            inp.value = "";
-            if(navigator.vibrate) navigator.vibrate(15);
-        }
-    }
-
-    chatRef.limitToLast(20).on("child_added", snap => {
-        const m = snap.val();
-        const box = document.getElementById("messages");
-        const d = document.createElement("div");
-        d.className = `msg ${m.role === myRole ? 'me' : 'her'}`;
-        d.textContent = m.text;
-        box.appendChild(d);
-        box.scrollTop = box.scrollHeight;
-    });
-
-    function updateTimer() {
-        const diff = Date.now() - new Date(START_DATE);
-        document.getElementById("days").textContent = Math.floor(diff / 86400000);
-        document.getElementById("hours").textContent = Math.floor(diff / 3600000) % 24;
-        document.getElementById("mins").textContent = Math.floor(diff / 60000) % 60;
-        document.getElementById("secs").textContent = Math.floor(diff / 1000) % 60;
-    }
-    setInterval(updateTimer, 1000);
-
-    function createHeart() {
-        if (document.hidden) return;
-        const h = document.createElement("div");
-        h.className = "heart-float";
-        h.textContent = ["❤️", "💖", "🌸", "💕", "✨"][Math.floor(Math.random()*5)];
-        h.style.left = Math.random() * 100 + "vw";
-        h.style.fontSize = Math.random() * 20 + 10 + "px";
-        h.style.animationDuration = Math.random() * 4 + 3 + "s";
-        document.body.appendChild(h);
-        setTimeout(() => h.remove(), 7000);
-    }
-    setInterval(createHeart, 1000);
-
-    document.getElementById("uInput").addEventListener("keypress", e => { if(e.key === "Enter") sendMsg(); });
+/* Сердечки при клике на заголовок */
+const loveText = document.getElementById('loveText');
+loveText.addEventListener('click', () => {
+  const rect = loveText.getBoundingClientRect();
+  for(let i=0;i<25;i++){
+    const heart=document.createElement('div');
+    heart.classList.add('heart');
+    heart.textContent='💖';
+    heart.style.left=(rect.left+Math.random()*rect.width)+'px';
+    heart.style.top=(rect.top+Math.random()*rect.height)+'px';
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),2600);
+  }
+});
 </script>
+
 </body>
 </html>
+
+
+
+
+
+
