@@ -120,3 +120,53 @@ function startRandomLoveNotifications() {
     // Важно: в браузере это работает, пока вкладка открыта в фоне
     setInterval(showLovePush, 10800000); 
 }
+// --- 7. МАКСИМАЛЬНЫЙ ИНТЕРАКТИВ ---
+
+// Эффект летящих сердечек из точки нажатия
+document.addEventListener('click', (e) => {
+    for (let i = 0; i < 6; i++) {
+        createParticle(e.clientX, e.clientY);
+    }
+});
+
+function createParticle(x, y) {
+    const particle = document.createElement('div');
+    particle.innerText = '❤️';
+    particle.style.position = 'fixed';
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    particle.style.fontSize = (Math.random() * 15 + 10) + 'px';
+    particle.style.pointerEvents = 'none';
+    particle.style.zIndex = '9999';
+    document.body.appendChild(particle);
+
+    const destinationX = (Math.random() - 0.5) * 300;
+    const destinationY = (Math.random() - 0.5) * 300;
+
+    const anim = particle.animate([
+        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+        { transform: `translate(${destinationX}px, ${destinationY}px) scale(0)`, opacity: 0 }
+    ], {
+        duration: 1000 + Math.random() * 1000,
+        easing: 'cubic-bezier(0, .9, .57, 1)'
+    });
+
+    anim.onfinish = () => particle.remove();
+}
+
+// Обновим функцию unlockApp, чтобы она меняла фразу в письме
+const originalUnlock = unlockApp;
+unlockApp = async function() {
+    originalUnlock(); // Вызываем старую логику
+    
+    // Меняем "цитату дня" в письме
+    try {
+        const response = await fetch('phrases.json');
+        const data = await response.json();
+        const highlight = document.querySelector('.highlight');
+        if (highlight && data.letter_quotes) {
+            const randomQuote = data.letter_quotes[Math.floor(Math.random() * data.letter_quotes.length)];
+            highlight.innerText = randomQuote + " 🐾💖";
+        }
+    } catch (e) { console.error(e); }
+};
