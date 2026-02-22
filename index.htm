@@ -2,10 +2,29 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Для тебя ❤️</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Для тебя">
+    
+    <link rel="apple-touch-icon" href="myy.png">
+
+    <script src="https://cdn.onesignal.com/sdks/webPushSDKSync.js" defer></script>
+    <script>
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(function(OneSignal) {
+            OneSignal.init({
+                appId: "ЗАМЕНИ_НА_СВОЙ_ONESIGNAL_APP_ID",
+            });
+        });
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600&family=Pacifico&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
     <style>
         :root {
             --primary-color: #ff4b6e;
@@ -15,6 +34,7 @@
 
         body {
             margin: 0;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             height: 100vh;
             overflow: hidden;
             font-family: 'Montserrat', sans-serif;
@@ -25,107 +45,53 @@
             transition: background 1.5s ease;
         }
 
-        body.dark-mode {
-            background: #1a1a1a;
-        }
+        body.dark-mode { background: #1a1a1a; }
 
         #app {
             position: relative;
             z-index: 10;
             text-align: center;
             color: white;
-            padding: 40px;
-            width: 90%;
-            max-width: 400px;
+            padding: 30px;
+            width: 85%;
+            max-width: 380px;
             border-radius: 30px;
             background: var(--glass);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* Для Safari */
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
-        h1 {
-            font-family: 'Pacifico', cursive;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 10px rgba(255, 75, 110, 0.5);
-        }
+        h1 { font-family: 'Pacifico', cursive; font-size: 1.6rem; margin-bottom: 15px; }
 
-        .timer-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .timer-item {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 10px 5px;
-            border-radius: 12px;
-        }
-
-        .timer-number {
-            display: block;
-            font-size: 1.2rem;
-            font-weight: 600;
-        }
-
-        .timer-label {
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
+        .timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 15px 0; }
+        .timer-item { background: rgba(255, 255, 255, 0.15); padding: 12px 5px; border-radius: 15px; }
+        .timer-number { display: block; font-size: 1.1rem; font-weight: 600; }
+        .timer-label { font-size: 0.55rem; text-transform: uppercase; }
 
         #history {
-            margin-top: 20px;
-            max-height: 120px;
+            margin-top: 15px;
+            max-height: 100px;
             overflow-y: auto;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-align: left;
-            padding: 10px;
+            padding: 12px;
             background: rgba(0, 0, 0, 0.1);
             border-radius: 15px;
-            scrollbar-width: thin;
         }
 
-        .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 25px;
-        }
-
+        .btn-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 20px; }
+        
         button {
-            border: none;
-            border-radius: 50px;
-            padding: 10px 20px;
-            background: white;
-            color: var(--primary-color);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            border: none; border-radius: 50px; padding: 10px 18px;
+            background: white; color: var(--primary-color); font-weight: 600;
+            font-size: 0.9rem; cursor: pointer; transition: 0.3s;
         }
 
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 75, 110, 0.3);
-        }
-
-        button:active { transform: translateY(0); }
-
-        /* Сердечки */
         .heart {
-            position: fixed;
-            bottom: -50px;
-            user-select: none;
-            pointer-events: none;
-            z-index: 1;
-            animation: floatUp linear infinite;
+            position: fixed; bottom: -50px; user-select: none; pointer-events: none;
+            z-index: 1; animation: floatUp linear infinite;
         }
 
         @keyframes floatUp {
@@ -137,19 +103,19 @@
 <body>
 
 <div id="app" class="animate__animated animate__fadeInUp">
-    <h1 id="name">Загрузка...</h1>
+    <h1 id="name">Для тебя ❤️</h1>
     
-    <div class="timer-grid" id="timer">
+    <div class="timer-grid">
         <div class="timer-item"><span class="timer-number" id="days">0</span><span class="timer-label">Дней</span></div>
         <div class="timer-item"><span class="timer-number" id="hours">0</span><span class="timer-label">Часов</span></div>
         <div class="timer-item"><span class="timer-number" id="mins">0</span><span class="timer-label">Мин</span></div>
         <div class="timer-item"><span class="timer-number" id="secs">0</span><span class="timer-label">Сек</span></div>
     </div>
 
-    <div id="history">✨ Сообщения появятся здесь...</div>
+    <div id="history">✨ Загрузка...</div>
 
     <div class="btn-group">
-        <button onclick="fetchData()">🔄 Обновить</button>
+        <button onclick="fetchData()">🔄</button>
         <button onclick="toggleMusic()" id="musicBtn">🎵 Музыка</button>
         <button onclick="toggleSecret()">🕵️ Секрет</button>
     </div>
@@ -158,7 +124,6 @@
 <audio id="music" loop src="https://cdn.pixabay.com/audio/2022/03/15/audio_8d79e4e8f7.mp3"></audio>
 
 <script>
-    // ЗАМЕНИ ЭТИ ДАННЫЕ НА СВОИ
     const CONFIG_URL = "https://ТВОЙ_НИК.github.io/ТВОЙ_РЕПО/messages.json";
     
     let state = {
@@ -175,56 +140,29 @@
             const data = await response.json();
             state = { ...state, ...data };
             updateUI();
-        } catch (err) {
-            console.error("Ошибка загрузки:", err);
-            // Если не загрузилось, попробуем обновить интерфейс с дефолтными данными
-            updateUI();
-        }
+        } catch (err) { console.error("Ошибка:", err); }
     }
 
     function updateUI() {
         document.getElementById("name").textContent = `Для тебя, ${state.name} ❤️`;
-        
-        // История сообщений
         const historyEl = document.getElementById("history");
-        historyEl.innerHTML = state.messages.map(m => `<div style="margin-bottom:8px">💖 ${m}</div>`).join("");
-
-        // Секретный режим
-        if (state.secretMode) {
-            document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode');
-        }
+        historyEl.innerHTML = state.messages.map(m => `<div style="margin-bottom:6px">💖 ${m}</div>`).join("");
+        document.body.classList.toggle('dark-mode', state.secretMode);
     }
 
     function updateTimer() {
-        const start = new Date(state.startDate);
-        const now = new Date();
-        const diff = now - start;
-
+        const diff = new Date() - new Date(state.startDate);
         if (isNaN(diff)) return;
-
-        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const m = Math.floor((diff / (1000 * 60)) % 60);
-        const s = Math.floor((diff / 1000) % 60);
-
-        document.getElementById("days").textContent = d;
-        document.getElementById("hours").textContent = h;
-        document.getElementById("mins").textContent = m;
-        document.getElementById("secs").textContent = s;
+        document.getElementById("days").textContent = Math.floor(diff / 86400000);
+        document.getElementById("hours").textContent = Math.floor((diff / 3600000) % 24);
+        document.getElementById("mins").textContent = Math.floor((diff / 60000) % 60);
+        document.getElementById("secs").textContent = Math.floor((diff / 1000) % 60);
     }
 
     function toggleMusic() {
         const audio = document.getElementById("music");
-        const btn = document.getElementById("musicBtn");
-        if (!state.isPlaying) {
-            audio.play();
-            btn.textContent = "⏸ Стоп";
-        } else {
-            audio.pause();
-            btn.textContent = "🎵 Музыка";
-        }
+        state.isPlaying ? audio.pause() : audio.play();
+        document.getElementById("musicBtn").textContent = state.isPlaying ? "🎵 Музыка" : "⏸ Стоп";
         state.isPlaying = !state.isPlaying;
     }
 
@@ -234,26 +172,21 @@
         updateUI();
     }
 
-    // Создание сердечек
     function createHeart() {
         const heart = document.createElement("div");
         heart.className = "heart";
         heart.textContent = ["❤️", "💖", "💝", "💕", "🌸"][Math.floor(Math.random() * 5)];
         heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = Math.random() * 20 + 15 + "px";
+        heart.style.fontSize = Math.random() * 15 + 15 + "px";
         heart.style.animationDuration = Math.random() * 3 + 3 + "s";
-        heart.style.opacity = Math.random();
-        
         document.body.appendChild(heart);
-        
         setTimeout(() => heart.remove(), 6000);
     }
 
-    // Запуск всего
     fetchData();
     setInterval(updateTimer, 1000);
     setInterval(createHeart, 400);
-    setInterval(fetchData, 30000); // Обновление данных раз в 30 сек
+    setInterval(fetchData, 60000);
 </script>
 
 </body>
