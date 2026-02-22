@@ -1,5 +1,5 @@
 // 1. Настройки
-const SECRET_WORD = "Окак"; 
+const SECRET_WORD = "окак"; 
 
 // 2. Автоматический вход при загрузке страницы
 window.addEventListener('load', () => {
