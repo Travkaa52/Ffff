@@ -1,279 +1,180 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>МОЕЙ САМОЙ-САМОЙ ЛЮБИМОЙ ДЕВУШКЕ ❤️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --main-gradient: linear-gradient(135deg, #FFDAB9 0%, #FFB6C1 100%); /* Персиковый-розовый */
-            --text-color-dark: #8B4513; /* Коричневый */
-            --text-color-light: #FFF8DC; /* Сливочный */
-            --heart-color: #FF69B4; /* Ярко-розовый */
-            --sparkle-color: #FFD700; /* Золотой */
-        }
-
-        body {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: var(--main-gradient);
-            font-family: 'Comfortaa', cursive;
-            color: var(--text-color-dark);
-            overflow: hidden; /* Чтобы анимации не создавали скролл */
-            position: relative;
-        }
-
-        .background-animation {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .background-animation span {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            animation: float 20s infinite ease-in-out;
-            opacity: 0;
-        }
-        /* Сердечки */
-        .background-animation span:nth-child(odd) {
-            background: var(--heart-color);
-            transform: rotate(45deg); /* Чтобы выглядело как сердечко */
-            width: 30px; height: 30px;
-            animation-delay: calc(var(--i) * -0.5s);
-            animation-duration: calc(10s + var(--i) * 0.5s);
-        }
-        /* Звездочки/Блестки */
-        .background-animation span:nth-child(even) {
-            background: var(--sparkle-color);
-            width: 15px; height: 15px;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 67% 57%, 78% 92%, 50% 70%, 22% 92%, 33% 57%, 2% 35%, 39% 35%);
-            animation-delay: calc(var(--i) * -0.5s);
-            animation-duration: calc(12s + var(--i) * 0.7s);
-        }
-
-        @keyframes float {
-            0% { transform: translateY(100vh) scale(0); opacity: 0; }
-            20% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
-        }
-
-        .card-container {
-            position: relative;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px 30px;
-            border-radius: 25px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            max-width: 400px;
-            border: 5px solid var(--heart-color);
-            transition: transform 0.3s ease-in-out;
-        }
-
-        .card-container:hover {
-            transform: scale(1.02);
-        }
-
-        .profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--sparkle-color);
-            margin-bottom: 20px;
-            box-shadow: 0 0 15px rgba(255, 105, 180, 0.6);
-            animation: bounce 2s infinite alternate;
-        }
-
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-10px); }
-        }
-
-        h1 {
-            font-family: 'Pacifico', cursive;
-            color: var(--heart-color);
-            font-size: 2.8em;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .message {
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            color: var(--text-color-dark);
-        }
-
-        .signature {
-            font-family: 'Pacifico', cursive;
-            font-size: 1.5em;
-            color: var(--heart-color);
-            margin-top: 30px;
-        }
-
-        .btn-magic {
-            background: var(--heart-color);
-            color: white;
-            border: none;
-            padding: 18px 35px;
-            border-radius: 50px;
-            font-size: 1.3em;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.4);
-            animation: floatButton 3s infinite ease-in-out;
-        }
-
-        .btn-magic:hover {
-            background: #FF1493; /* Глубокий розовый */
-            transform: scale(1.1) rotate(2deg);
-            box-shadow: 0 10px 25px rgba(255, 20, 147, 0.6);
-        }
-
-        @keyframes floatButton {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
-        }
-
-        /* Анимация конфетти */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: var(--heart-color); /* Розовое конфетти */
-            border-radius: 50%;
-            opacity: 0;
-            animation: confetti-fall 3s forwards;
-            z-index: 100;
-        }
-
-        @keyframes confetti-fall {
-            0% { transform: translateY(0) rotateZ(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotateZ(720deg); opacity: 0; }
-        }
-
-        /* Анимация "люблю тебя" */
-        .flying-text {
-            position: absolute;
-            font-family: 'Pacifico', cursive;
-            font-size: 2.5em;
-            color: rgba(255, 255, 255, 0.8);
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-            pointer-events: none;
-            animation: flyText 10s infinite ease-out;
-            opacity: 0;
-            z-index: 2;
-        }
-
-        @keyframes flyText {
-            0% { transform: translate(-100vw, 50vh) scale(0.5); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translate(100vw, -50vh) scale(1.2); opacity: 0; }
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Для тебя зайка ❤️</title>
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family: 'Segoe UI', sans-serif;
+}
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:-1;
+}
+#ui{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  color:white;
+  text-shadow:0 0 15px pink;
+}
+#text{
+  font-size:2.5em;
+  margin-bottom:20px;
+}
+button{
+  padding:15px 35px;
+  border:none;
+  border-radius:30px;
+  background:linear-gradient(45deg,#ff0066,#ff99cc);
+  color:white;
+  font-size:1.2em;
+  cursor:pointer;
+  box-shadow:0 0 20px pink;
+}
+#timer{
+  margin-top:15px;
+  font-size:1.1em;
+}
+</style>
 </head>
 <body>
 
-    <audio id="backgroundMusic" loop autoplay>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        Ваш браузер не поддерживает аудио.
-    </audio>
+<canvas id="bg"></canvas>
 
-    <div class="background-animation" id="backgroundAnimation"></div>
+<div id="ui">
+  <div id="text"></div>
+  <button onclick="boom()">Нажми 💖</button>
+  <div id="timer"></div>
+</div>
 
-    <div class="card-container">
-        <img src="https://images.unsplash.com/photo-1548480749-923f6e8c7c93?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Моя любимая" class="profile-pic">
-        
-        <h1>Моей сладкой Зайке!</h1>
-        <p class="message">
-            Привет, моё Солнышко! Просто хотел напомнить тебе, что ты самое удивительное, нежное и невероятное чудо в моей жизни. 
-            Каждая секунда с тобой — это волшебство. 
-            Моё сердце бьется только для тебя, моя самая-самая любимая зайка! 
-        </p>
-        <button class="btn-magic" onclick="triggerMagic()">Нажми , моя Любовь!</button>
-        <p class="signature">Твой навсегда</p>
-    </div>
+<audio id="music" src="https://cdn.pixabay.com/audio/2022/03/15/audio_8d79e4e8f7.mp3"></audio>
 
-    <script>
-        // Анимация фоновых сердечек и звездочек
-        function createBackgroundElements() {
-            const container = document.getElementById('backgroundAnimation');
-            for (let i = 0; i < 50; i++) {
-                const span = document.createElement('span');
-                span.style.left = Math.random() * 100 + 'vw';
-                span.style.animationDuration = Math.random() * 15 + 10 + 's';
-                span.style.animationDelay = Math.random() * 10 + 's';
-                span.style.setProperty('--i', i); // Передаем индекс для вариативности анимации
-                container.appendChild(span);
-            }
-        }
-        createBackgroundElements();
+<script>
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+let w,h;
+function resize(){
+  w=canvas.width=window.innerWidth;
+  h=canvas.height=window.innerHeight;
+}
+window.onresize=resize;
+resize();
 
-        // Анимация "люблю тебя"
-        function createFlyingText() {
-            const texts = ["Люблю тебя! ❤️", "Моё Счастье! ✨", "Ты лучшая! 🥰"];
-            setInterval(() => {
-                const text = document.createElement('div');
-                text.classList.add('flying-text');
-                text.innerHTML = texts[Math.floor(Math.random() * texts.length)];
-                text.style.left = Math.random() * 100 + 'vw';
-                text.style.top = Math.random() * 100 + 'vh';
-                text.style.animationDuration = Math.random() * 8 + 7 + 's';
-                document.body.appendChild(text);
-                setTimeout(() => text.remove(), 10000);
-            }, 3000); // Создавать новый текст каждые 3 секунды
-        }
-        createFlyingText();
+/* Градиент фон */
+let hue=0;
 
-        // Основная магия при клике на кнопку
-        function triggerMagic() {
-            // Анимация конфетти
-            for (let i = 0; i < 70; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.left = `${Math.random() * 100}vw`;
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 70%)`; // Случайные цвета
-                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
-                document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 3000);
-            }
+/* Частицы */
+let particles=[];
+function Particle(x,y){
+  this.x=x;
+  this.y=y;
+  this.vx=(Math.random()-0.5)*4;
+  this.vy=(Math.random()-0.5)*4;
+  this.life=100;
+}
+function spawn(x,y){
+  for(let i=0;i<40;i++){
+    particles.push(new Particle(x,y));
+  }
+}
 
-            // Дополнительный Alert с сообщением
-            setTimeout(() => {
-                alert("Ты моё ВСЁ! Каждый день с тобой  это подарок");
-            }, 500);
+/* Сердца */
+let hearts=[];
+function Heart(){
+  this.x=Math.random()*w;
+  this.y=h+20;
+  this.size=10+Math.random()*20;
+  this.speed=1+Math.random()*2;
+}
+function createHeart(){
+  hearts.push(new Heart());
+}
+setInterval(createHeart,200);
 
-            // Можно добавить вибрацию для мобильных устройств (если поддерживается)
-            if (navigator.vibrate) {
-                navigator.vibrate([200, 100, 200]);
-            }
+/* Анимация */
+function animate(){
+  hue+=0.3;
+  ctx.fillStyle="hsl("+hue+",70%,15%)";
+  ctx.fillRect(0,0,w,h);
 
-            // Воспроизведение звука (если нужно, можно добавить короткий звук)
-            // const sound = new Audio('ПУТЬ_К_ЗВУКУ.mp3');
-            // sound.play();
-        }
+  hearts.forEach((h,i)=>{
+    h.y-=h.speed;
+    ctx.font=h.size+"px Arial";
+    ctx.fillText("❤️",h.x,h.y);
+    if(h.y<-50) hearts.splice(i,1);
+  });
 
-        // Автоматическое воспроизведение музыки (может быть заблокировано браузерами)
-        window.addEventListener('load', () => {
-            const music = document.getElementById('backgroundMusic');
-            music.volume = 0.3; // Тише, чтобы не заглушать
-            music.play().catch(e => console.log("Музыка заблокирована браузером:", e));
-        });
-    </script>
+  particles.forEach((p,i)=>{
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.life--;
+    ctx.fillStyle="pink";
+    ctx.fillRect(p.x,p.y,3,3);
+    if(p.life<=0) particles.splice(i,1);
+  });
+
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* Фразы */
+const phrases=[
+  "Ты — самое красивое что есть в моей жизни ❤️",
+  "Я думаю о тебе каждый день 💭",
+  "Ты делаешь меня счастливым 😍",
+  "Я оооочень сильно тебя люблю 💖",
+  "Ты моё чудооо ✨"
+];
+let phraseIndex=0;
+let charIndex=0;
+let textEl=document.getElementById("text");
+
+function typeText(){
+  if(charIndex < phrases[phraseIndex].length){
+    textEl.textContent += phrases[phraseIndex][charIndex];
+    charIndex++;
+  } else {
+    setTimeout(()=>{
+      textEl.textContent="";
+      charIndex=0;
+      phraseIndex=(phraseIndex+1)%phrases.length;
+    },2000);
+  }
+}
+setInterval(typeText,100);
+
+/* Таймер любви */
+const startDate = new Date("2025-01-01");
+function updateTimer(){
+  let now=new Date();
+  let diff=now-startDate;
+  let days=Math.floor(diff/1000/60/60/24);
+  document.getElementById("timer").textContent=
+    "Я люблю тебя уже "+days+" дней 💕";
+}
+setInterval(updateTimer,1000);
+
+/* Кнопка */
+function boom(){
+  spawn(w/2,h/2);
+  document.getElementById("music").play();
+}
+
+/* Клик по экрану */
+canvas.addEventListener("click",(e)=>{
+  spawn(e.clientX,e.clientY);
+});
+</script>
+
 </body>
 </html>
