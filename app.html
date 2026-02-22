@@ -249,6 +249,58 @@
         const y = (window.innerHeight / 2 - e.pageY) / 25;
         card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
     });
+    // Регистрация Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker зарегистрирован'))
+        .catch(err => console.error('Ошибка регистрации SW:', err));
+}
+
+async function enableNotifications() {
+    // Просим разрешение
+    const permission = await Notification.requestPermission();
+    
+    if (permission === 'granted') {
+        document.getElementById('notify-btn').innerText = '✅ Уведомления включены';
+        
+        // Тестовое уведомление через 3 секунды
+        setTimeout(() => {
+            showLocalNotification("Привет, любимая! ❤️", "Теперь ты будешь получать мои нежные напоминания.");
+        }, 3000);
+
+        // Настраиваем "будильник" сообщений
+        startLoveInterval();
+    } else {
+        alert('Чтобы получать сообщения, нужно разрешить уведомления в настройках браузера.');
+    }
+}
+
+function showLocalNotification(title, body) {
+    if ('serviceWorker' in navigator && Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification(title, { body, icon: 'https://cdn-icons-png.flaticon.com/512/833/833472.png' });
+        });
+    }
+}
+
+// Функция, которая будет слать рандомные фразы
+function startLoveInterval() {
+    const phrases = [
+        "Просто хотел сказать, что ты чудо... ✨",
+        "Ты — самое лучшее, что со мной случилось 🌸",
+        "Скучаю по тебе каждую секунду... 💕",
+        "Посмотри на счетчик, наше время бесценно ❤️",
+        "Твоя улыбка — мой любимый вид искусства 🎨"
+    ];
+
+    // Будет проверять каждую минуту, не пора ли отправить (для теста)
+    // В реальном PWA лучше использовать Push API с сервера, 
+    // но для начала сделаем локальный таймер, пока вкладка открыта:
+    setInterval(() => {
+        const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+        showLocalNotification("Напоминание о любви", randomPhrase);
+    }, 3600000); // Раз в час
+}
 </script>
 
 </body>
