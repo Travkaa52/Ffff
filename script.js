@@ -171,6 +171,65 @@ unlockApp = async function() {
     } catch (e) { console.error(e); }
 };
 
+
+// ... (весь твой предыдущий код остается без изменений до раздела 6) ...
+
+// --- 8. МЕНЕДЖЕР УСТАНОВКИ (Android & iOS) ---
+
+let deferredPrompt;
+
+// Слушаем событие готовности к установке (Android)
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Показываем кнопку установки, если она есть в HTML
+    const installBtn = document.getElementById('install-btn');
+    if (installBtn) {
+        installBtn.style.display = 'block';
+    }
+});
+
+// Функция для вызова окна установки (вешаем на кнопку в HTML)
+async function installPWA() {
+    if (!deferredPrompt) {
+        // Если зашли с iPhone, показываем инструкцию
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            alert("Чтобы установить приложение на iPhone:\n1. Нажми кнопку 'Поделиться' (квадрат со стрелкой)\n2. Выбери 'На экран Домой' 📲");
+        } else {
+            alert("Приложение уже установлено или браузер не поддерживает авто-установку.");
+        }
+        return;
+    }
+
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+        console.log('Пользователь установил приложение ❤️');
+    }
+    deferredPrompt = null;
+    const installBtn = document.getElementById('install-btn');
+    if (installBtn) installBtn.style.display = 'none';
+}
+
+// Переопределяем функцию входа, чтобы включить музыку и обновить текст
+// (Это дополнение к твоему коду)
+unlockApp = function() {
+    const loginScreen = document.getElementById("login-screen");
+    const letterContent = document.getElementById("letter-content");
+
+    if (loginScreen && letterContent) {
+        loginScreen.style.display = "none";
+        letterContent.style.display = "block";
+        letterContent.classList.add("animate__animated", "animate__fadeIn");
+        
+        updateLetterText(); // Твоя функция обновления текста
+        playLoveMusic();    // Твоя функция музыки
+        
+        if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+    }
+};
+
 // --- ДОПОЛНИТЕЛЬНЫЙ ФУНКЦИОНАЛ ---
 
 // 1. Эффект разлетающихся сердечек при клике в любое место
