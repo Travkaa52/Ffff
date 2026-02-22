@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Для тебя ❤️</title>
+<title>Наш Уголок ❤️</title>
 
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,286 +17,231 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
 <style>
-:root{
---primary:#ff4b6e;
---secondary:#ffb6c1;
---glass:rgba(255,255,255,0.2);
-}
-body{
-margin:0;
-padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-height:100vh;
-overflow:hidden;
-font-family:'Montserrat',sans-serif;
-display:flex;
-justify-content:center;
-align-items:center;
-background:linear-gradient(135deg,var(--primary),var(--secondary));
-transition:background 1s;
-}
-body.dark{background:#1a1a1a;}
-
-#app{
-z-index:10;
-text-align:center;
-color:white;
-padding:25px;
-width:85%;
-max-width:380px;
-border-radius:30px;
-background:var(--glass);
-backdrop-filter:blur(15px);
-border:1px solid rgba(255,255,255,0.3);
-box-shadow:0 15px 35px rgba(0,0,0,0.1);
+:root {
+    --primary: #ff4b6e;
+    --secondary: #ffb6c1;
+    --glass: rgba(255, 255, 255, 0.2);
 }
 
-h1{font-family:'Pacifico';font-size:1.6rem;margin-bottom:15px;}
-
-.timer-grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:8px;
-margin-bottom:15px;
+body {
+    margin: 0; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
+    height: 100vh; overflow: hidden; font-family: 'Montserrat', sans-serif;
+    display: flex; justify-content: center; align-items: center;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    transition: background 1s;
 }
-.timer-item{
-background:rgba(255,255,255,0.15);
-padding:10px 5px;
-border-radius:12px;
-}
-.timer-number{display:block;font-size:1.1rem;font-weight:600;}
-.timer-label{font-size:.55rem;text-transform:uppercase;}
+body.dark { background: #1a1a1a; }
 
-#chat-container{
-background:rgba(0,0,0,.2);
-border-radius:20px;
-padding:10px;
-display:flex;
-flex-direction:column;
-height:220px;
+#app {
+    z-index: 10; text-align: center; color: white; padding: 20px;
+    width: 88%; max-width: 380px; border-radius: 30px;
+    background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 15px 35px rgba(0,0,0,0.1);
 }
 
-#messages{
-flex:1;
-overflow-y:auto;
-display:flex;
-flex-direction:column;
-gap:8px;
-padding:5px;
-margin-bottom:8px;
-}
-#messages::-webkit-scrollbar{width:4px;}
-#messages::-webkit-scrollbar-thumb{
-background:rgba(255,255,255,0.4);
-border-radius:5px;
+h1 { font-family: 'Pacifico'; font-size: 1.5rem; margin: 0 0 10px 0; }
+
+/* Таймер */
+.timer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
+.timer-item { background: rgba(255,255,255,0.15); padding: 8px 2px; border-radius: 12px; }
+.timer-number { display: block; font-size: 1rem; font-weight: 600; }
+.timer-label { font-size: .5rem; text-transform: uppercase; opacity: 0.8; }
+
+/* Чат */
+#chat-container {
+    background: rgba(0,0,0,0.2); border-radius: 20px; padding: 10px;
+    display: flex; flex-direction: column; height: 300px;
 }
 
-.msg{
-padding:8px 12px;
-border-radius:15px;
-font-size:.85rem;
-max-width:80%;
-line-height:1.3;
-word-wrap:break-word;
-animation:fade .3s ease;
-}
-@keyframes fade{from{opacity:0;transform:translateY(5px)}}
-
-.me{
-align-self:flex-end;
-background:var(--primary);
-color:white;
-border-bottom-right-radius:2px;
-}
-.her{
-align-self:flex-start;
-background:white;
-color:#333;
-border-bottom-left-radius:2px;
-}
-.time{
-font-size:10px;
-opacity:.6;
-margin-top:4px;
+#messages {
+    flex: 1; overflow-y: auto; display: flex; flex-direction: column;
+    gap: 8px; padding: 5px; margin-bottom: 5px;
 }
 
-.input-area{display:flex;gap:5px;}
+.msg {
+    padding: 10px 14px; border-radius: 18px; font-size: .85rem;
+    max-width: 75%; line-height: 1.3; word-wrap: break-word;
+    position: relative; animation: fadeIn .3s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } }
 
-input{
-flex:1;
-border:none;
-border-radius:20px;
-padding:8px 15px;
-outline:none;
-font-family:'Montserrat';
+.me { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 2px; }
+.her { align-self: flex-start; background: white; color: #333; border-bottom-left-radius: 2px; }
+
+.msg img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
+.msg.loc { background: #4a90e2; color: white; cursor: pointer; text-decoration: underline; }
+
+.time { font-size: 9px; opacity: 0.6; margin-top: 4px; text-align: right; }
+#typing { font-size: 10px; text-align: left; height: 15px; margin-left: 10px; opacity: 0.8; }
+
+/* Кнопки и ввод */
+.controls { display: flex; gap: 5px; margin-top: 5px; align-items: center; }
+.icon-btn { 
+    background: rgba(255,255,255,0.2); border: none; width: 35px; height: 35px;
+    border-radius: 50%; color: white; font-size: 1.1rem; cursor: pointer;
+}
+input {
+    flex: 1; border: none; border-radius: 20px; padding: 10px 15px;
+    outline: none; font-family: 'Montserrat'; font-size: 0.9rem;
 }
 
-.send-btn{
-background:var(--primary);
-color:white;
-border:none;
-width:35px;
-height:35px;
-border-radius:50%;
-cursor:pointer;
-}
-
-button.small{
-background:white;
-border:none;
-border-radius:50px;
-padding:8px 15px;
-color:#ff4b6e;
-font-weight:600;
-cursor:pointer;
-}
-
-.heart{
-position:fixed;
-bottom:-50px;
-pointer-events:none;
-animation:floatUp linear forwards;
-z-index:1;
-}
-@keyframes floatUp{
-0%{transform:translateY(0) rotate(0);opacity:1;}
-100%{transform:translateY(-110vh) rotate(360deg);opacity:0;}
+.heart { position: fixed; bottom: -50px; pointer-events: none; animation: floatUp linear forwards; z-index: 1; }
+@keyframes floatUp {
+    0% { transform: translateY(0) rotate(0); opacity: 1; }
+    100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
 }
 </style>
 </head>
 <body>
 
 <div id="app" class="animate__animated animate__fadeInUp">
-<h1 id="name"></h1>
+    <h1 id="name">Для тебя ❤️</h1>
 
-<div class="timer-grid">
-<div class="timer-item"><span class="timer-number" id="days">0</span><span class="timer-label">Дней</span></div>
-<div class="timer-item"><span class="timer-number" id="hours">0</span><span class="timer-label">Часов</span></div>
-<div class="timer-item"><span class="timer-number" id="mins">0</span><span class="timer-label">Мин</span></div>
-<div class="timer-item"><span class="timer-number" id="secs">0</span><span class="timer-label">Сек</span></div>
-</div>
+    <div class="timer-grid">
+        <div class="timer-item"><span class="timer-number" id="days">0</span><span class="timer-label">Дней</span></div>
+        <div class="timer-item"><span class="timer-number" id="hours">0</span><span class="timer-label">Час</span></div>
+        <div class="timer-item"><span class="timer-number" id="mins">0</span><span class="timer-label">Мин</span></div>
+        <div class="timer-item"><span class="timer-number" id="secs">0</span><span class="timer-label">Сек</span></div>
+    </div>
 
-<div id="chat-container">
-<div id="messages"></div>
-<div class="input-area">
-<input type="text" id="uInput" placeholder="Напиши что-нибудь...">
-<button class="send-btn" onclick="sendMsg()">🚀</button>
-</div>
-</div>
+    <div id="chat-container">
+        <div id="messages"></div>
+        <div id="typing"></div>
+        <div class="controls">
+            <button class="icon-btn" onclick="sendLoc()">📍</button>
+            <button class="icon-btn" onclick="document.getElementById('f').click()">📷</button>
+            <input type="file" id="f" hidden accept="image/*" onchange="sendImg(this)">
+            <input type="text" id="uInput" placeholder="Пиши здесь..." oninput="handleTyping()">
+            <button class="icon-btn" style="background:var(--primary)" onclick="sendMsg()">🚀</button>
+        </div>
+    </div>
 
-<div style="margin-top:15px;display:flex;justify-content:center;gap:10px;">
-<button class="small" onclick="toggleMusic()" id="musicBtn">🎵 Музыка</button>
-<button class="small" onclick="toggleDark()">🌙 Тема</button>
-</div>
+    <div style="margin-top:15px; display:flex; justify-content:center; gap:10px;">
+        <button onclick="toggleMusic()" id="musicBtn" style="border:none; border-radius:20px; padding:8px 15px; font-weight:600; color:var(--primary)">🎵 Музыка</button>
+        <button onclick="toggleDark()" style="border:none; border-radius:20px; padding:8px 15px; font-weight:600; color:var(--primary)">🌙</button>
+    </div>
 </div>
 
 <audio id="music" loop src="https://cdn.pixabay.com/audio/2022/03/15/audio_8d79e4e8f7.mp3"></audio>
 
 <script>
-/* ===== НАСТРОЙКИ ===== */
-const START_DATE="2024-01-01T00:00:00";
-const USER_NAME="Любимая";
-
-/* ===== FIREBASE ===== */
-const firebaseConfig={
-apiKey:"YOUR_KEY",
-authDomain:"YOUR_AUTH",
-databaseURL:"YOUR_DB_URL",
-projectId:"YOUR_PROJECT",
-appId:"YOUR_APP"
+/* --- CONFIG --- */
+const START_DATE = "2024-01-01T00:00:00";
+const USER_NAME = "Любимая";
+const firebaseConfig = {
+    apiKey: "AIzaSyDvF1USp7BnmWT9WBWlpikh6fwzM5RY8LU",
+    databaseURL: "https://planning-with-ai-3778e-default-rtdb.firebaseio.com/",
+    projectId: "planning-with-ai-3778e",
+    appId: "1:529178865890:web:259924626fb1827abd6ebb"
 };
+
+/* --- INIT --- */
 firebase.initializeApp(firebaseConfig);
-const db=firebase.database();
-const chatRef=db.ref("chat");
+const db = firebase.database();
+const chatRef = db.ref("chat");
+const typingRef = db.ref("typing");
 
-/* ===== ROLE ===== */
-let myRole=localStorage.getItem("role");
-if(!myRole){
-myRole=confirm("Ты автор проекта (ОН)?")?"me":"her";
-localStorage.setItem("role",myRole);
+let myRole = localStorage.getItem("role") || (confirm("Ты автор (Егор)?") ? "me" : "her");
+localStorage.setItem("role", myRole);
+document.getElementById("name").textContent = `Для тебя, ${USER_NAME} ❤️`;
+
+/* --- CHAT LOGIC --- */
+function sendMsg() {
+    const inp = document.getElementById("uInput");
+    const text = inp.value.trim();
+    if(!text) return;
+    chatRef.push({ role: myRole, text: text, type: 'text', time: getTime() });
+    inp.value = "";
+    stopTyping();
 }
 
-/* ===== DARK MODE ===== */
-if(localStorage.getItem("dark")==="1")document.body.classList.add("dark");
-function toggleDark(){
-document.body.classList.toggle("dark");
-localStorage.setItem("dark",document.body.classList.contains("dark")?"1":"0");
+function sendLoc() {
+    navigator.geolocation.getCurrentPosition(p => {
+        const url = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
+        chatRef.push({ role: myRole, text: "📍 Моя локация", link: url, type: 'loc', time: getTime() });
+    }, () => alert("Включи GPS"));
 }
 
-/* ===== MUSIC ===== */
-function toggleMusic(){
-const audio=document.getElementById("music");
-const btn=document.getElementById("musicBtn");
-if(audio.paused){audio.play();btn.textContent="⏸ Стоп";}
-else{audio.pause();btn.textContent="🎵 Музыка";}
-}
-document.body.addEventListener("click",()=>{
-const audio=document.getElementById("music");
-if(audio.paused)audio.play();
-},{once:true});
-
-/* ===== TIMER ===== */
-function updateTimer(){
-const start=new Date(START_DATE);
-const diff=Date.now()-start;
-document.getElementById("days").textContent=Math.floor(diff/86400000);
-document.getElementById("hours").textContent=Math.floor(diff/3600000)%24;
-document.getElementById("mins").textContent=Math.floor(diff/60000)%60;
-document.getElementById("secs").textContent=Math.floor(diff/1000)%60;
-}
-setInterval(updateTimer,1000);
-
-/* ===== CHAT ===== */
-let lastSend=0;
-
-function sendMsg(){
-const now=Date.now();
-if(now-lastSend<700)return;
-const inp=document.getElementById("uInput");
-const text=inp.value.trim();
-if(!text)return;
-lastSend=now;
-chatRef.push({
-role:myRole,
-text:text,
-time:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})
-});
-inp.value="";
+function sendImg(input) {
+    const file = input.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        chatRef.push({ role: myRole, img: e.target.result, type: 'img', time: getTime() });
+    };
+    reader.readAsDataURL(file);
 }
 
-function addMessage(m){
-const box=document.getElementById("messages");
-const d=document.createElement("div");
-d.className="msg "+(m.role===myRole?"me":"her");
-d.innerHTML=`${m.text}<div class="time">${m.time}</div>`;
-box.appendChild(d);
-box.scrollTop=box.scrollHeight;
-}
+function getTime() { return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
 
-chatRef.limitToLast(20).on("child_added",snap=>{
-addMessage(snap.val());
+/* --- REALTIME UPDATE --- */
+chatRef.limitToLast(15).on("child_added", snap => {
+    const m = snap.val();
+    const box = document.getElementById("messages");
+    const d = document.createElement("div");
+    d.className = `msg ${m.role === myRole ? 'me' : 'her'} ${m.type==='loc'?'loc':''}`;
+    
+    if(m.type === 'img') d.innerHTML = `<img src="${m.img}"><div class="time">${m.time}</div>`;
+    else if(m.type === 'loc') d.innerHTML = `<span onclick="window.open('${m.link}')">${m.text}</span>`;
+    else d.innerHTML = `${m.text}<div class="time">${m.time}</div>`;
+    
+    box.appendChild(d);
+    box.scrollTop = box.scrollHeight;
+    if(m.role !== myRole && navigator.vibrate) navigator.vibrate(50);
 });
 
-document.getElementById("uInput").addEventListener("keypress",e=>{
-if(e.key==="Enter")sendMsg();
+/* --- TYPING STATUS --- */
+let typingTimeout;
+function handleTyping() {
+    typingRef.child(myRole).set(true);
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(stopTyping, 2000);
+}
+function stopTyping() { typingRef.child(myRole).set(false); }
+
+typingRef.on("value", snap => {
+    const status = snap.val();
+    const other = myRole === 'me' ? 'her' : 'me';
+    document.getElementById("typing").textContent = status && status[other] ? "Печатает..." : "";
 });
 
-/* ===== HEARTS ===== */
-function createHeart(){
-if(document.hidden)return;
-const heart=document.createElement("div");
-heart.className="heart";
-heart.textContent=["❤️","💖","💕","💝","🌸"][Math.floor(Math.random()*5)];
-heart.style.left=Math.random()*100+"vw";
-heart.style.fontSize=Math.random()*15+15+"px";
-heart.style.animationDuration=Math.random()*3+4+"s";
-document.body.appendChild(heart);
-setTimeout(()=>heart.remove(),7000);
+/* --- OTHER --- */
+function updateTimer() {
+    const diff = Date.now() - new Date(START_DATE);
+    document.getElementById("days").textContent = Math.floor(diff/86400000);
+    document.getElementById("hours").textContent = Math.floor(diff/3600000)%24;
+    document.getElementById("mins").textContent = Math.floor(diff/60000)%60;
+    document.getElementById("secs").textContent = Math.floor(diff/1000)%60;
 }
-setInterval(createHeart,900);
+setInterval(updateTimer, 1000);
 
-/* ===== INIT ===== */
-document.getElementById("name").textContent=`Для тебя, ${USER_NAME} ❤️`;
-updateTimer();
+function toggleMusic() {
+    const a = document.getElementById("music");
+    const b = document.getElementById("musicBtn");
+    if(a.paused) { a.play(); b.textContent = "⏸ Стоп"; }
+    else { a.pause(); b.textContent = "🎵 Музыка"; }
+}
+
+function toggleDark() { 
+    document.body.classList.toggle("dark"); 
+    localStorage.setItem("dark", document.body.classList.contains("dark") ? "1" : "0");
+}
+if(localStorage.getItem("dark") === "1") document.body.classList.add("dark");
+
+function createHeart() {
+    if(document.hidden) return;
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.textContent = ["❤️","💖","💕","💝"][Math.floor(Math.random()*4)];
+    h.style.left = Math.random()*100+"vw";
+    h.style.fontSize = Math.random()*15+15+"px";
+    h.style.animationDuration = Math.random()*3+4+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(), 6000);
+}
+setInterval(createHeart, 800);
+
+document.getElementById("uInput").addEventListener("keypress", e => { if(e.key==="Enter") sendMsg(); });
 </script>
 </body>
 </html>
