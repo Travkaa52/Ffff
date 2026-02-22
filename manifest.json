@@ -1,1 +1,9 @@
-
+{
+  "name": "Для неё ❤️",
+  "short_name": "Любовь",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ff4b6e",
+  "theme_color": "#ff4b6e",
+  "icons":[]
+}
