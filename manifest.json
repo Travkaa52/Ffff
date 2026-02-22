@@ -1,9 +1,15 @@
 {
-  "name": "Для неё ❤️",
-  "short_name": "Любовь",
+  "name": "Для тебя",
+  "short_name": "Для тебя",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ff4b6e",
   "theme_color": "#ff4b6e",
-  "icons":[]
+  "icons": [
+    {
+      "src": "myy.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
