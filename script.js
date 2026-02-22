@@ -118,7 +118,7 @@ function startRandomLoveNotifications() {
     
     // Повторяем, например, каждые 3 часа (10800000 мс)
     // Важно: в браузере это работает, пока вкладка открыта в фоне
-    setInterval(showLovePush, 10800000); 
+    setInterval(showLovePush, 120000); 
 }
 // --- 7. МАКСИМАЛЬНЫЙ ИНТЕРАКТИВ ---
 
