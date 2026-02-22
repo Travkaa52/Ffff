@@ -170,3 +170,55 @@ unlockApp = async function() {
         }
     } catch (e) { console.error(e); }
 };
+
+// --- ДОПОЛНИТЕЛЬНЫЙ ФУНКЦИОНАЛ ---
+
+// 1. Эффект разлетающихся сердечек при клике в любое место
+document.addEventListener('click', (e) => {
+    for (let i = 0; i < 5; i++) {
+        const heart = document.createElement('div');
+        heart.innerText = '❤️';
+        heart.style.position = 'fixed';
+        heart.style.left = e.clientX + 'px';
+        heart.style.top = e.clientY + 'px';
+        heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+        heart.style.pointerEvents = 'none';
+        heart.style.zIndex = '1000';
+        document.body.appendChild(heart);
+
+        const destX = (Math.random() - 0.5) * 200;
+        const destY = (Math.random() - 0.5) * 200;
+
+        heart.animate([
+            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+            { transform: `translate(${destX}px, ${destY}px) scale(0)`, opacity: 0 }
+        ], { duration: 1000, easing: 'ease-out' }).onfinish = () => heart.remove();
+    }
+});
+
+// 2. Обновление фразы в письме из JSON
+async function updateLetterText() {
+    try {
+        const response = await fetch('phrases.json');
+        const data = await response.json();
+        const quotes = data.letter_quotes;
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        const highlight = document.querySelector('.highlight');
+        if (highlight) highlight.innerText = randomQuote;
+    } catch (e) { console.log("Ошибка загрузки текста"); }
+}
+
+// Изменяем функцию входа, чтобы всё запускалось
+const oldUnlock = unlockApp;
+unlockApp = function() {
+    oldUnlock();
+    updateLetterText();
+    if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+};
+
+// 3. Секретная музыка (запустится при нажатии на "Открыть")
+function playLoveMusic() {
+    const audio = new Audio('love.mp3'); // Положи файл love.mp3 в папку
+    audio.volume = 0.3;
+    audio.play().catch(() => console.log("Музыка ждет клика"));
+}
