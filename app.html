@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Infinity Love — Наша История</title>
+    <title>Infinity Love — Наша Вселенная</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@200;400;700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@200;400;800&family=Caveat:wght@700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --accent: #ff4d6d;
-            --glass: rgba(255, 255, 255, 0.08);
-            --border: rgba(255, 255, 255, 0.2);
+            --accent: #ff0055;
+            --accent-glow: rgba(255, 0, 85, 0.5);
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.12);
+            --bg-dark: #050505;
         }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background: #0a0a0c;
+            background: var(--bg-dark);
             color: white;
             font-family: 'Exo 2', sans-serif;
             overflow: hidden;
@@ -28,162 +32,208 @@
             align-items: center;
         }
 
+        /* Анимированный фон "Аврора" */
+        .aurora-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, #1a0b2e 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, #2e0b1a 0%, transparent 40%);
+            filter: blur(80px);
+            opacity: 0.8;
+        }
+
         #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1;
+            top: 0; left: 0; z-index: 1;
+            mix-blend-mode: screen;
         }
 
         .container {
             position: relative;
             z-index: 10;
-            width: 90%;
-            max-width: 450px;
-            perspective: 1000px;
+            width: 95%;
+            max-width: 420px;
+            perspective: 2000px;
         }
 
+        /* Ультра-стеклянная карта */
         .main-card {
             background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
             border: 1px solid var(--border);
-            border-radius: 35px;
-            padding: 40px 30px;
+            border-radius: 40px;
+            padding: 50px 30px;
             text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            box-shadow: 
+                0 0 80px rgba(0,0,0,0.5),
+                inset 0 0 20px rgba(255,255,255,0.05);
             transform-style: preserve-3d;
-            transition: transform 0.1s ease;
+            transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
         }
 
+        /* Заголовок с неоновым градиентом */
         .header h1 {
             font-family: 'Caveat', cursive;
-            font-size: 3rem;
-            margin: 0 0 10px 0;
-            background: linear-gradient(to right, #fff, var(--accent));
+            font-size: 3.5rem;
+            margin: 0;
+            background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px var(--accent-glow));
+            letter-spacing: -1px;
         }
 
         .subtitle {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            opacity: 0.6;
-            margin-bottom: 40px;
+            letter-spacing: 5px;
+            opacity: 0.4;
+            margin: 15px 0 45px 0;
+            font-weight: 700;
         }
 
+        /* Таймер в стиле "стеклянных капсул" */
         .timer-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 35px;
         }
 
         .timer-box {
             flex: 1;
-            margin: 0 5px;
             padding: 15px 5px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 18px;
-            border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .timer-box:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            transform: translateZ(20px);
         }
 
         .num {
             display: block;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--accent);
-            text-shadow: 0 0 15px rgba(255, 77, 109, 0.4);
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
         }
 
         .label {
-            font-size: 0.6rem;
-            opacity: 0.5;
-            font-weight: 400;
+            font-size: 0.55rem;
+            opacity: 0.4;
+            font-weight: 700;
+            margin-top: 5px;
         }
 
+        /* Цитата с эффектом печати */
         .quote-area {
-            margin-top: 30px;
-            min-height: 60px;
+            margin-top: 20px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #dynamic-quote {
             font-family: 'Caveat', cursive;
-            font-size: 1.5rem;
-            color: #eee;
-            line-height: 1.2;
+            font-size: 1.7rem;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
+        /* Кнопка "Cyberpunk" */
         .btn-notify {
-            margin-top: 25px;
-            background: none;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 12px 25px;
-            border-radius: 50px;
+            margin-top: 35px;
+            background: white;
+            border: none;
+            color: black;
+            padding: 16px 35px;
+            border-radius: 20px;
             cursor: pointer;
             font-family: 'Exo 2';
-            font-weight: 600;
-            transition: all 0.3s;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
         }
 
         .btn-notify:hover {
+            transform: scale(1.05) translateY(-5px);
             background: var(--accent);
             color: white;
-            box-shadow: 0 0 20px var(--accent);
+            box-shadow: 0 15px 40px var(--accent-glow);
         }
 
         .heart-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 0 10px var(--accent));
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            animation: pulse 2s infinite;
+            display: inline-block;
         }
+
+        @keyframes pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--accent)); }
+            50% { transform: scale(1.15); filter: drop-shadow(0 0 20px var(--accent)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--accent)); }
+        }
+
     </style>
 </head>
 <body>
 
+<div class="aurora-bg"></div>
 <canvas id="bg-canvas"></canvas>
 
 <div class="container">
     <div class="main-card" id="tilt-card">
-        <div class="heart-icon">♾️</div>
+        <div class="heart-icon">❤️</div>
         <div class="header">
             <h1>Моя Вселенная</h1>
         </div>
-        <div class="subtitle">Мы вместе уже:</div>
+        <div class="subtitle">вечность начинается здесь</div>
 
         <div class="timer-row">
             <div class="timer-box">
                 <span class="num" id="d">0</span>
-                <span class="label">ДНЕЙ</span>
+                <span class="label">дней</span>
             </div>
             <div class="timer-box">
                 <span class="num" id="h">0</span>
-                <span class="label">ЧАСОВ</span>
+                <span class="label">часов</span>
             </div>
             <div class="timer-box">
                 <span class="num" id="m">0</span>
-                <span class="label">МИНУТ</span>
+                <span class="label">мин</span>
             </div>
             <div class="timer-box">
                 <span class="num" id="s">0</span>
-                <span class="label">СЕКУНД</span>
+                <span class="label">сек</span>
             </div>
         </div>
 
         <div class="quote-area">
-            <p id="dynamic-quote">Загружаю моменты счастья...</p>
+            <p id="dynamic-quote">Собираю звёзды для тебя...</p>
         </div>
 
-        <button class="btn-notify" onclick="initNotifications()">Получать нежность</button>
+        <button class="btn-notify" onclick="initNotifications()">Включить нежность</button>
     </div>
 </div>
 
 <script>
-    // --- НАСТРОЙКИ ---
     const START_DATE = new Date(2025, 11, 22, 19, 30, 0); 
 
-    // --- ФОНОВЫЕ ЧАСТИЦЫ ---
+    // --- ЛЕТАЮЩИЕ ЗВЕЗДЫ ---
     const canvas = document.getElementById('bg-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -195,23 +245,23 @@
 
     class Particle {
         constructor() {
+            this.reset();
+        }
+        reset() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 2 + 0.5;
-            this.speedX = Math.random() * 0.5 - 0.25;
-            this.speedY = Math.random() * 0.5 - 0.25;
-            this.opacity = Math.random() * 0.5 + 0.2;
+            this.size = Math.random() * 1.5 + 0.5;
+            this.speedX = (Math.random() - 0.5) * 0.3;
+            this.speedY = (Math.random() - 0.5) * 0.3;
+            this.alpha = Math.random();
         }
         update() {
             this.x += this.speedX;
             this.y += this.speedY;
-            if (this.x > canvas.width) this.x = 0;
-            if (this.x < 0) this.x = canvas.width;
-            if (this.y > canvas.height) this.y = 0;
-            if (this.y < 0) this.y = canvas.height;
+            if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
         }
         draw() {
-            ctx.fillStyle = `rgba(255, 77, 109, ${this.opacity})`;
+            ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
@@ -219,23 +269,18 @@
     }
 
     function createParticles() {
-        for (let i = 0; i < 100; i++) particles.push(new Particle());
+        for (let i = 0; i < 150; i++) particles.push(new Particle());
     }
 
-    function animateParticles() {
+    function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        particles.forEach(p => {
-            p.update();
-            p.draw();
-        });
-        requestAnimationFrame(animateParticles);
+        particles.forEach(p => { p.update(); p.draw(); });
+        requestAnimationFrame(animate);
     }
 
-    // --- ТАЙМЕР И КОНТЕНТ ---
+    // --- ТАЙМЕР ---
     function updateApp() {
-        const now = new Date();
-        const diff = now - START_DATE;
-
+        const diff = new Date() - START_DATE;
         const d = Math.floor(diff / 86400000);
         const h = Math.floor((diff / 3600000) % 24);
         const m = Math.floor((diff / 60000) % 60);
@@ -246,42 +291,37 @@
         document.getElementById('m').innerText = m;
         document.getElementById('s').innerText = s;
 
-        updateQuote(now.getHours());
-    }
-
-    function updateQuote(hour) {
+        const hour = new Date().getHours();
         const quoteEl = document.getElementById('dynamic-quote');
         let text = "";
-        if (hour >= 5 && hour < 12) text = "Доброе утро, любовь моя. Пусть день будет таким же светлым, как ты. ☀️";
-        else if (hour >= 12 && hour < 18) text = "Надеюсь, ты улыбаешься прямо сейчас. Ты — моё вдохновение. ✨";
-        else if (hour >= 18 && hour < 23) text = "Вечер становится уютнее, когда я думаю о нас. 🌙";
-        else text = "Звезды светят ярче, зная, что ты есть в этом мире. Сладких снов. ☁️";
+        if (hour >= 5 && hour < 12) text = "Каждое утро я влюбляюсь в тебя заново. Просыпайся, солнце. ☀️";
+        else if (hour >= 12 && hour < 18) text = "Ты — причина моей самой искренней улыбки сегодня. ✨";
+        else if (hour >= 18 && hour < 23) text = "Вечер создан для того, чтобы мечтать о нашем будущем. 🌙";
+        else text = "Засыпай с мыслью, что ты — мой самый драгоценный мир. Спи сладко. ☁️";
         
         if (quoteEl.innerText !== text) quoteEl.innerText = text;
     }
 
-    // --- ИНТЕРАКТИВ ---
+    // --- TILT EFFECT ---
     const card = document.getElementById('tilt-card');
     document.addEventListener('mousemove', (e) => {
-        let x = (window.innerWidth / 2 - e.pageX) / 20;
-        let y = (window.innerHeight / 2 - e.pageY) / 20;
+        const x = (window.innerWidth / 2 - e.pageX) / 25;
+        const y = (window.innerHeight / 2 - e.pageY) / 25;
         card.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
     });
 
-    // --- УВЕДОМЛЕНИЯ ---
+    // --- NOTIFICATIONS ---
     async function initNotifications() {
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-            alert('Теперь я смогу шептать тебе приятности! ❤️');
-            // Здесь логика интервала из прошлого сообщения
+            alert('С этого момента магия будет приходить тебе в уведомлениях! ❤️');
         }
     }
 
-    // Запуск
     window.addEventListener('resize', initCanvas);
     initCanvas();
     createParticles();
-    animateParticles();
+    animate();
     setInterval(updateApp, 1000);
     updateApp();
 </script>
