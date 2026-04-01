@@ -1,224 +1,174 @@
-// --- TELEGRAM WEB APP ---
+// --- 0. ИНИЦИАЛИЗАЦИЯ TG ---
 let tg = window.Telegram ? window.Telegram.WebApp : null;
 if (tg) {
     tg.expand();
+    tg.ready();
 }
 
-// --- 1. НАСТРОЙКИ ---
-const SECRET_WORD = "окак"; // секретное слово
+// --- 1. КОНСТАНТЫ ---
+const SECRET_WORD = "окак"; 
+const CONFIG = {
+    vibrateShort: 50,
+    vibrateSuccess: [50, 30, 50],
+    notificationInterval: 3600000, // Раз в час (в реальности)
+    musicVolume: 0.4
+};
 
-// --- 2. АВТОВХОД + SERVICE WORKER ---
-window.addEventListener('load', () => {
+// --- 2. АВТОВХОД И ЗАГРУЗКА ---
+window.addEventListener('DOMContentLoaded', () => {
+    // Если уже входила - пускаем сразу
     if (localStorage.getItem("isLoggedIn") === "true") {
-        unlockApp();
+        unlockApp(true); // true значит "без анимации", чтобы не ждать
     }
 
+    // Регистрация SW
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js')
-            .then(() => console.log("SW готов ❤️"))
-            .catch(err => console.error("SW ошибка:", err));
+            .catch(err => console.log("SW не критичен, работаем дальше"));
     }
 });
 
-// --- 3. ПРОВЕРКА ПАРОЛЯ ---
+// --- 3. ЛОГИКА ПРОВЕРКИ ---
 function checkPassword() {
-    const passwordInput = document.getElementById("password");
+    const input = document.getElementById("password");
     const error = document.getElementById("error-message");
+    if (!input) return;
 
-    if (!passwordInput) return;
-
-    const pass = passwordInput.value.toLowerCase().trim();
+    const pass = input.value.toLowerCase().trim();
 
     if (pass === SECRET_WORD) {
+        // УСПЕХ
         localStorage.setItem("isLoggedIn", "true");
-        if (navigator.vibrate) navigator.vibrate(50);
-        unlockApp();
-
-        if (tg) {
-            tg.sendData("login_success");
-        }
+        if (navigator.vibrate) navigator.vibrate(CONFIG.vibrateSuccess);
+        
+        // Запускаем музыку именно здесь (после клика)
+        playLoveMusic();
+        unlockApp(false);
     } else {
-        if (error) {
-            error.innerText = "Ой, кажется, это не то слово... Попробуй еще раз ❤️";
-        }
-        passwordInput.value = "";
-        passwordInput.classList.add("animate__animated", "animate__shakeX");
-        setTimeout(() => passwordInput.classList.remove("animate__shakeX"), 500);
+        // ОШИБКА
+        if (error) error.innerText = "Это не наше секретное слово... ❤️";
+        input.value = "";
+        input.classList.add("animate__animated", "animate__shakeX");
+        setTimeout(() => input.classList.remove("animate__shakeX"), 500);
+        if (navigator.vibrate) navigator.vibrate(100);
     }
 }
 
-// --- 4. ПЕРЕКЛЮЧЕНИЕ ЭКРАНОВ ---
-function unlockApp() {
-    const loginScreen = document.getElementById("login-screen");
-    const letterContent = document.getElementById("letter-content");
+// --- 4. РАЗБЛОКИРОВКА И ТЕКСТ ---
+async function unlockApp(fastMode = false) {
+    const login = document.getElementById("login-screen");
+    const content = document.getElementById("letter-content");
 
-    if (loginScreen && letterContent) {
-        loginScreen.style.display = "none";
-        letterContent.style.display = "block";
-        letterContent.classList.add("animate__animated", "animate__fadeIn");
+    if (!login || !content) return;
 
-        updateLetterText();
-
-        if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
-
-        if (tg) {
-            tg.sendData("opened_letter");
-        }
+    if (fastMode) {
+        login.style.display = "none";
+        content.style.display = "block";
     } else {
-        window.location.href = "letter.html";
+        login.classList.add("animate__animated", "animate__fadeOut");
+        setTimeout(() => {
+            login.style.display = "none";
+            content.style.display = "block";
+            content.classList.add("animate__animated", "animate__fadeIn");
+        }, 500);
+    }
+
+    // Загружаем фразы
+    const data = await fetchAssets();
+    const highlight = document.querySelector('.highlight');
+    if (highlight && data.letter_quotes) {
+        const randomQuote = data.letter_quotes[Math.floor(Math.random() * data.letter_quotes.length)];
+        highlight.innerText = randomQuote + " 🐾💖";
     }
 }
 
-// --- 5. ПЕРЕХОД К СЧЁТЧИКУ ---
+// --- 5. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
+async function fetchAssets() {
+    try {
+        const res = await fetch('phrases.json');
+        return await res.json();
+    } catch (e) {
+        // Запасной вариант, если файл не найден
+        return {
+            messages: ["Ты чудо ❤️"],
+            letter_quotes: ["Ты мой котенок"]
+        };
+    }
+}
+
+function playLoveMusic() {
+    const audio = new Audio('love.mp3');
+    audio.volume = CONFIG.musicVolume;
+    audio.loop = true;
+    audio.play().catch(() => console.log("Нужен еще один клик для звука"));
+}
+
 function goToApp() {
-    if (tg) {
-        tg.sendData("open_counter");
-    }
-    window.location.href = "app.html";
+    // Плавный переход
+    document.body.classList.add('animate__animated', 'animate__fadeOut');
+    setTimeout(() => {
+        window.location.href = "app.html";
+    }, 500);
 }
 
 // --- 6. УВЕДОМЛЕНИЯ ---
 async function enableNotifications() {
-    const btn = document.getElementById('notify-btn');
-
-    if (!("Notification" in window)) {
-        alert("Этот телефон не поддерживает уведомления 😔");
-        return;
-    }
-
     const permission = await Notification.requestPermission();
-
     if (permission === 'granted') {
-        if (btn) {
-            btn.innerText = "✅ Уведомления включены";
-            btn.style.background = "rgba(255,255,255,0.4)";
-        }
-
-        startRandomLoveNotifications();
-
-        if (tg) {
-            tg.sendData("enable_love_notifications");
-        }
+        const btn = document.getElementById('notify-btn');
+        if (btn) btn.innerText = "✅ На связи 24/7";
+        
+        // Сразу шлем первое
+        showPush();
+        // Ставим интервал
+        setInterval(showPush, CONFIG.notificationInterval);
     } else {
-        alert("Разреши уведомления в настройках ❤️");
+        alert("Пожалуйста, разреши уведомления в настройках браузера!");
     }
 }
 
-// --- 7. ФРАЗЫ ---
-async function getRandomPhrase() {
-    try {
-        const response = await fetch('phrases.json');
-        const data = await response.json();
-        const randomIndex = Math.floor(Math.random() * data.messages.length);
-        return data.messages[randomIndex];
-    } catch (error) {
-        console.error("Ошибка фраз:", error);
-        return "Я тебя очень люблю ❤️";
-    }
-}
-
-async function showLovePush() {
-    const phrase = await getRandomPhrase();
-
-    if (navigator.serviceWorker.controller) {
-        navigator.serviceWorker.ready.then(reg => {
-            reg.showNotification("Наш Уголок ❤️", {
-                body: phrase,
-                icon: "myy.png",
-                badge: "myy.png",
-                vibrate: [200, 100, 200]
-            });
+async function showPush() {
+    const data = await fetchAssets();
+    const phrase = data.messages[Math.floor(Math.random() * data.messages.length)];
+    
+    if ('serviceWorker' in navigator) {
+        const reg = await navigator.serviceWorker.ready;
+        reg.showNotification("Наш Уголок ❤️", {
+            body: phrase,
+            icon: "myy.png",
+            vibrate: [200, 100, 200]
         });
     }
 }
 
-function startRandomLoveNotifications() {
-    showLovePush();
-    setInterval(showLovePush, 120000);
-}
-
-// --- 8. СЕРДЕЧКИ ---
-document.addEventListener('click', (e) => {
-    for (let i = 0; i < 5; i++) {
-        createParticle(e.clientX, e.clientY);
+// --- 7. ЭФФЕКТ СЕРДЕЧЕК ПРИ КЛИКЕ ---
+document.addEventListener('mousedown', (e) => {
+    for (let i = 0; i < 6; i++) {
+        createHeart(e.clientX, e.clientY);
     }
 });
 
-function createParticle(x, y) {
-    const particle = document.createElement('div');
-    particle.innerText = '❤️';
-    particle.style.position = 'fixed';
-    particle.style.left = x + 'px';
-    particle.style.top = y + 'px';
-    particle.style.fontSize = (Math.random() * 15 + 10) + 'px';
-    particle.style.pointerEvents = 'none';
-    particle.style.zIndex = '9999';
-    document.body.appendChild(particle);
+function createHeart(x, y) {
+    const heart = document.createElement('div');
+    heart.innerHTML = ['❤️', '💖', '✨', '🌸'][Math.floor(Math.random() * 4)];
+    heart.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        font-size: ${Math.random() * 15 + 10}px;
+        pointer-events: none;
+        z-index: 9999;
+    `;
+    document.body.appendChild(heart);
 
-    const destinationX = (Math.random() - 0.5) * 300;
-    const destinationY = (Math.random() - 0.5) * 300;
+    const destX = (Math.random() - 0.5) * 200;
+    const destY = (Math.random() - 0.5) * 200 - 100;
 
-    const anim = particle.animate([
+    heart.animate([
         { transform: 'translate(0,0) scale(1)', opacity: 1 },
-        { transform: `translate(${destinationX}px, ${destinationY}px) scale(0)`, opacity: 0 }
+        { transform: `translate(${destX}px, ${destY}px) scale(0)`, opacity: 0 }
     ], {
-        duration: 1000 + Math.random() * 1000,
-        easing: 'cubic-bezier(0,.9,.57,1)'
-    });
-
-    anim.onfinish = () => particle.remove();
-}
-
-// --- 9. ОБНОВЛЕНИЕ ТЕКСТА ---
-async function updateLetterText() {
-    try {
-        const response = await fetch('phrases.json');
-        const data = await response.json();
-        const quotes = data.letter_quotes;
-        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-        const highlight = document.querySelector('.highlight');
-        if (highlight) highlight.innerText = randomQuote + " 🐾💖";
-    } catch (e) {
-        console.log("Ошибка текста");
-    }
-}
-
-// --- 10. МУЗЫКА ---
-function playLoveMusic() {
-    const audio = new Audio('love.mp3');
-    audio.volume = 0.3;
-    audio.play().catch(() => console.log("Музыка ждёт клика"));
-}
-
-// --- 11. PWA УСТАНОВКА ---
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const installBtn = document.getElementById('install-btn');
-    if (installBtn) {
-        installBtn.style.display = 'block';
-    }
-});
-
-async function installPWA() {
-    if (!deferredPrompt) {
-        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-            alert("Нажми Поделиться → На экран Домой 📲");
-        } else {
-            alert("Установка недоступна");
-        }
-        return;
-    }
-
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-        console.log("Установлено ❤️");
-    }
-    deferredPrompt = null;
-
-    const installBtn = document.getElementById('install-btn');
-    if (installBtn) installBtn.style.display = 'none';
+        duration: 1200,
+        easing: 'ease-out'
+    }).onfinish = () => heart.remove();
 }
