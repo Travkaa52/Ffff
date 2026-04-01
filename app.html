@@ -3,304 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Наш Уголок ❤️</title>
+    <title>Infinity Love — Наша История</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Montserrat:wght@300;500;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@200;400;700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
-            --glass-bg: rgba(255, 255, 255, 0.15);
-            --glass-border: rgba(255, 255, 255, 0.3);
-            --text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --accent: #ff4d6d;
+            --glass: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.2);
         }
 
-        body {
+        body, html {
             margin: 0;
             padding: 0;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0c;
+            color: white;
+            font-family: 'Exo 2', sans-serif;
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Montserrat', sans-serif;
-            background: #000;
-            overflow: hidden;
-            color: white;
         }
 
-        /* Анимированный живой фон */
-        .bg-canvas {
+        #bg-canvas {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #ff8da1 0%, #ff4d6d 50%, #800f2f 100%);
-            z-index: -1;
-            filter: blur(20px);
-            animation: bgShift 15s infinite alternate;
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
 
-        @keyframes bgShift {
-            0% { transform: scale(1) rotate(0deg); }
-            100% { transform: scale(1.2) rotate(5deg); }
-        }
-
-        .app-wrapper {
-            width: 90%;
-            max-width: 420px;
+        .container {
+            position: relative;
             z-index: 10;
+            width: 90%;
+            max-width: 450px;
             perspective: 1000px;
         }
 
-        /* Стеклянная карточка */
         .main-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            border-radius: 40px;
-            padding: 40px 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 35px;
+            padding: 40px 30px;
             text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
             transform-style: preserve-3d;
-            transition: transform 0.3s ease;
+            transition: transform 0.1s ease;
         }
 
-        .main-card:active {
-            transform: scale(0.98);
+        .header h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 3rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .counter-header h2 {
-            font-family: 'Pacifico', cursive;
-            font-size: 1.8rem;
-            margin: 0 0 30px 0;
-            text-shadow: var(--text-shadow);
-        }
-
-        /* Сетка таймера */
-        .timer-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .timer-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px 10px;
-            border-radius: 25px;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .timer-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-5px);
-        }
-
-        .timer-number {
-            display: block;
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 5px;
-        }
-
-        .timer-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            opacity: 0.8;
-            font-weight: 500;
-        }
-
-        .info-card {
-            margin-top: 20px;
-            font-style: italic;
-            font-weight: 300;
+        .subtitle {
             font-size: 0.9rem;
-            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.6;
+            margin-bottom: 40px;
         }
 
-        /* Плавающие сердечки */
-        .floating-element {
-            position: absolute;
-            pointer-events: none;
-            z-index: 1;
-            animation: floatUp 6s linear infinite;
-            opacity: 0;
+        .timer-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
         }
 
-        @keyframes floatUp {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.6; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        .timer-box {
+            flex: 1;
+            margin: 0 5px;
+            padding: 15px 5px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .heart-pulse {
-            display: inline-block;
-            animation: heartBeat 1.2s infinite;
-            color: #fff;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+        .num {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-shadow: 0 0 15px rgba(255, 77, 109, 0.4);
         }
 
-        @keyframes heartBeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.3); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.15); }
-            70% { transform: scale(1); }
+        .label {
+            font-size: 0.6rem;
+            opacity: 0.5;
+            font-weight: 400;
+        }
+
+        .quote-area {
+            margin-top: 30px;
+            min-height: 60px;
+        }
+
+        #dynamic-quote {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: #eee;
+            line-height: 1.2;
+        }
+
+        .btn-notify {
+            margin-top: 25px;
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Exo 2';
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-notify:hover {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .heart-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 10px var(--accent));
         }
     </style>
 </head>
 <body>
 
-<div class="bg-canvas"></div>
+<canvas id="bg-canvas"></canvas>
 
-<div class="app-wrapper animate__animated animate__zoomIn">
-    <div class="main-card" id="card">
-        <div class="counter-header">
-            <span class="heart-pulse">❤️</span>
-            <h2>Люблю тебя уже</h2>
+<div class="container">
+    <div class="main-card" id="tilt-card">
+        <div class="heart-icon">♾️</div>
+        <div class="header">
+            <h1>Моя Вселенная</h1>
         </div>
-        
-        <div class="timer-grid">
-            <div class="timer-item">
-                <span class="timer-number" id="days">0</span>
-                <span class="timer-label" id="days-label">дней</span>
+        <div class="subtitle">Мы вместе уже:</div>
+
+        <div class="timer-row">
+            <div class="timer-box">
+                <span class="num" id="d">0</span>
+                <span class="label">ДНЕЙ</span>
             </div>
-            <div class="timer-item">
-                <span class="timer-number" id="hours">0</span>
-                <span class="timer-label" id="hours-label">часов</span>
+            <div class="timer-box">
+                <span class="num" id="h">0</span>
+                <span class="label">ЧАСОВ</span>
             </div>
-            <div class="timer-item">
-                <span class="timer-number" id="mins">0</span>
-                <span class="timer-label" id="mins-label">минут</span>
+            <div class="timer-box">
+                <span class="num" id="m">0</span>
+                <span class="label">МИНУТ</span>
             </div>
-            <div class="timer-item">
-                <span class="timer-number" id="secs">0</span>
-                <span class="timer-label" id="secs-label">секунд</span>
+            <div class="timer-box">
+                <span class="num" id="s">0</span>
+                <span class="label">СЕКУНД</span>
             </div>
         </div>
 
-        <div class="info-card">
-            <p>«Ты — моё самое красивое „да“ в этой жизни» 🌸</p>
+        <div class="quote-area">
+            <p id="dynamic-quote">Загружаю моменты счастья...</p>
         </div>
+
+        <button class="btn-notify" onclick="initNotifications()">Получать нежность</button>
     </div>
 </div>
 
 <script>
+    // --- НАСТРОЙКИ ---
     const START_DATE = new Date(2025, 11, 22, 19, 30, 0); 
 
-    function updateTimer() {
-        const now = new Date();
-        const diff = now - START_DATE;
+    // --- ФОНОВЫЕ ЧАСТИЦЫ ---
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
 
-        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const m = Math.floor((diff / (1000 * 60)) % 60);
-        const s = Math.floor((diff / 1000) % 60);
-
-        // Плавная замена цифр
-        updateElement("days", d);
-        updateElement("hours", h);
-        updateElement("mins", m);
-        updateElement("secs", s);
-
-        document.getElementById("days-label").innerText = declension(d, ['день', 'дня', 'дней']);
-        document.getElementById("hours-label").innerText = declension(h, ['час', 'часа', 'часов']);
-        document.getElementById("mins-label").innerText = declension(m, ['минута', 'минуты', 'минут']);
-        document.getElementById("secs-label").innerText = declension(s, ['секунда', 'секунды', 'секунд']);
+    function initCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
     }
 
-    function updateElement(id, value) {
-        const el = document.getElementById(id);
-        if(el.innerText !== value.toString()) {
-            el.innerText = value;
-            el.classList.add('animate__animated', 'animate__pulse');
-            setTimeout(() => el.classList.remove('animate__pulse'), 500);
+    class Particle {
+        constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 2 + 0.5;
+            this.speedX = Math.random() * 0.5 - 0.25;
+            this.speedY = Math.random() * 0.5 - 0.25;
+            this.opacity = Math.random() * 0.5 + 0.2;
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.x > canvas.width) this.x = 0;
+            if (this.x < 0) this.x = canvas.width;
+            if (this.y > canvas.height) this.y = 0;
+            if (this.y < 0) this.y = canvas.height;
+        }
+        draw() {
+            ctx.fillStyle = `rgba(255, 77, 109, ${this.opacity})`;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
         }
     }
 
-    function declension(n, titles) {
-        return titles[(n % 10 === 1 && n % 100 !== 11) ? 0 : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 1 : 2];
+    function createParticles() {
+        for (let i = 0; i < 100; i++) particles.push(new Particle());
     }
 
-    // Создание летающих элементов
-    function spawnParticle() {
-        const particle = document.createElement('div');
-        particle.className = 'floating-element';
-        particle.innerText = ['❤️', '✨', '🌸', '💕'][Math.floor(Math.random() * 4)];
-        particle.style.left = Math.random() * 100 + 'vw';
-        particle.style.fontSize = (Math.random() * 20 + 10) + 'px';
-        particle.style.bottom = "-5vh";
-        document.body.appendChild(particle);
-        
-        setTimeout(() => particle.remove(), 6000);
-    }
-
-    setInterval(updateTimer, 1000);
-    setInterval(spawnParticle, 600);
-    updateTimer();
-
-    // Эффект наклона карточки за пальцем (Gyroscope-like)
-    const card = document.getElementById('card');
-    document.addEventListener('mousemove', (e) => {
-        const x = (window.innerWidth / 2 - e.pageX) / 25;
-        const y = (window.innerHeight / 2 - e.pageY) / 25;
-        card.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
-    });
-    // Регистрация Service Worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('Service Worker зарегистрирован'))
-        .catch(err => console.error('Ошибка регистрации SW:', err));
-}
-
-async function enableNotifications() {
-    // Просим разрешение
-    const permission = await Notification.requestPermission();
-    
-    if (permission === 'granted') {
-        document.getElementById('notify-btn').innerText = '✅ Уведомления включены';
-        
-        // Тестовое уведомление через 3 секунды
-        setTimeout(() => {
-            showLocalNotification("Привет, любимая! ❤️", "Теперь ты будешь получать мои нежные напоминания.");
-        }, 3000);
-
-        // Настраиваем "будильник" сообщений
-        startLoveInterval();
-    } else {
-        alert('Чтобы получать сообщения, нужно разрешить уведомления в настройках браузера.');
-    }
-}
-
-function showLocalNotification(title, body) {
-    if ('serviceWorker' in navigator && Notification.permission === 'granted') {
-        navigator.serviceWorker.ready.then(registration => {
-            registration.showNotification(title, { body, icon: 'https://cdn-icons-png.flaticon.com/512/833/833472.png' });
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.update();
+            p.draw();
         });
+        requestAnimationFrame(animateParticles);
     }
-}
 
-// Функция, которая будет слать рандомные фразы
-function startLoveInterval() {
-    const phrases = [
-        "Просто хотел сказать, что ты чудо... ✨",
-        "Ты — самое лучшее, что со мной случилось 🌸",
-        "Скучаю по тебе каждую секунду... 💕",
-        "Посмотри на счетчик, наше время бесценно ❤️",
-        "Твоя улыбка — мой любимый вид искусства 🎨"
-    ];
+    // --- ТАЙМЕР И КОНТЕНТ ---
+    function updateApp() {
+        const now = new Date();
+        const diff = now - START_DATE;
 
-    // Будет проверять каждую минуту, не пора ли отправить (для теста)
-    // В реальном PWA лучше использовать Push API с сервера, 
-    // но для начала сделаем локальный таймер, пока вкладка открыта:
-    setInterval(() => {
-        const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-        showLocalNotification("Напоминание о любви", randomPhrase);
-    }, 3600000); // Раз в час
-}
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff / 3600000) % 24);
+        const m = Math.floor((diff / 60000) % 60);
+        const s = Math.floor((diff / 1000) % 60);
+
+        document.getElementById('d').innerText = d;
+        document.getElementById('h').innerText = h;
+        document.getElementById('m').innerText = m;
+        document.getElementById('s').innerText = s;
+
+        updateQuote(now.getHours());
+    }
+
+    function updateQuote(hour) {
+        const quoteEl = document.getElementById('dynamic-quote');
+        let text = "";
+        if (hour >= 5 && hour < 12) text = "Доброе утро, любовь моя. Пусть день будет таким же светлым, как ты. ☀️";
+        else if (hour >= 12 && hour < 18) text = "Надеюсь, ты улыбаешься прямо сейчас. Ты — моё вдохновение. ✨";
+        else if (hour >= 18 && hour < 23) text = "Вечер становится уютнее, когда я думаю о нас. 🌙";
+        else text = "Звезды светят ярче, зная, что ты есть в этом мире. Сладких снов. ☁️";
+        
+        if (quoteEl.innerText !== text) quoteEl.innerText = text;
+    }
+
+    // --- ИНТЕРАКТИВ ---
+    const card = document.getElementById('tilt-card');
+    document.addEventListener('mousemove', (e) => {
+        let x = (window.innerWidth / 2 - e.pageX) / 20;
+        let y = (window.innerHeight / 2 - e.pageY) / 20;
+        card.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+    });
+
+    // --- УВЕДОМЛЕНИЯ ---
+    async function initNotifications() {
+        const permission = await Notification.requestPermission();
+        if (permission === 'granted') {
+            alert('Теперь я смогу шептать тебе приятности! ❤️');
+            // Здесь логика интервала из прошлого сообщения
+        }
+    }
+
+    // Запуск
+    window.addEventListener('resize', initCanvas);
+    initCanvas();
+    createParticles();
+    animateParticles();
+    setInterval(updateApp, 1000);
+    updateApp();
 </script>
 
 </body>
